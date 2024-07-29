@@ -1,0 +1,170 @@
+<div class="container-fluid" role="main">
+
+  <!--Icon-->
+  <div class="row">
+    <div class="col-md-1 border-0"><i class="fa fa-cloud-download fa-2x"></i></div>
+    <div class="col-md-11">
+      <h5> Onay Dosya Sorgulama</h5>
+    </div>
+  </div>
+
+  <div class="row pt-4">
+    <!--Search Form-->
+    <form [formGroup]="searchForm">
+      <!--card-->
+      <div class="card p-2 border-0 ">
+        <div class="card-body bg-secondary text-white ">
+          <div class="row">
+            <!--corporateId-->
+            <div class="col-md-2">
+              <select class="form-select" [(ngModel)]="corporateIdDefault" formControlName="corporateId"
+                id="corporateId" name="corporateId" (change)="getRequestNumbersByCorporateId($event)" required min=0
+                max=Number.MAX_VALUE pattern="^[0-9]*$" style="cursor: pointer">
+                <option value=-1 selected disabled>Kurum Seçiniz</option>
+                <option *ngFor="let corporateGetListResponseModel of corporateGetListResponseModels"
+                  [value]="corporateGetListResponseModel.id">
+                  {{corporateGetListResponseModel.corporateCode}}-{{corporateGetListResponseModel.corporateName}}
+                </option>
+              </select>
+              <div class="alert alert-danger"
+                *ngIf="searchForm.get('corporateId')?.hasError('required') && searchForm.get('corporateId')?.dirty">
+                Kurum zorunlu!</div>
+              <div class="alert alert-danger"
+                *ngIf="searchForm.get('corporateId')?.hasError('min') && searchForm.get('corporateId')?.dirty">
+                0 dan büyük olması zorunlu!</div>
+              <div class="alert alert-danger"
+                *ngIf="searchForm.get('corporateId')?.hasError('max') && searchForm.get('corporateId')?.dirty">
+                {{Number.MAX_VALUE}} den küçük olması zorunlu!</div>
+              <div class="alert alert-danger"
+                *ngIf="searchForm.get('corporateId')?.hasError('pattern') && searchForm.get('corporateId')?.dirty">
+                Rakam olması zorunlu!</div>
+            </div>
+
+            <!--requestNumber-->
+            <div class="col-md-2">
+              <select class="form-select" [(ngModel)]="requestNumberDefault" formControlName="requestNumber"
+                id="requestNumber" name="requestNumber" (change)="setRequestNumber($event)" required style="cursor: pointer">
+                <option value=-1 selected disabled>Talep Seçiniz</option>
+                <option
+                  *ngFor="let paymentRequestGetListByCorporateIdResponseModel of paymentRequestGetListByCorporateIdResponseModels"
+                  [value]="paymentRequestGetListByCorporateIdResponseModel.requestNumber">{{paymentRequestGetListByCorporateIdResponseModel.requestNumber}}
+                </option>
+              </select>
+            </div>
+
+            <!--startDate-->
+            <div class="col-md-2">
+              <input type="date" class="form-control" formControlName="startDate" id="startDate" name="startDate" (change)="setStartDate($event)" 
+                placeholder="Başlangıç Tarihi Giriniz">
+            </div>
+
+            <!--endDate-->
+            <div class="col-md-2">
+              <input type="date" class="form-control" formControlName="endDate" id="endDate" name="endDate" (change)="setEndDate($event)" 
+                placeholder="Bitiş Tarihi Giriniz">
+            </div>
+
+            <div class="col-md-2"></div>
+              
+            <!--Search Button-->
+            <div class="col-md-1">
+              <div class="form-group">
+                <button type="button" class="btn btn-warning text-white text-white" name="search" (click)="search()"
+                  [disabled]="!searchForm.valid" style="cursor: pointer;">Ara</button>
+              </div>
+            </div>
+
+            <!--Clear Button-->
+            <div class="col-md-1">
+              <div class="form-group">
+                <button type="button" class="btn btn-light" name="clear" (click)="clear()"
+                  style="cursor: pointer;">Temizle</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!--Table-->
+  <div class="card p-2">
+    <div class="card-body">
+      <div class="table-responsive" id="divSerach">
+        <table class="table align-items-center table-flush" id="tblSearch" name="tblSearch">
+          <thead>
+            <th style="display: none;"><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('id')"
+                style="cursor: pointer;"></i>Id<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('id')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('corporateCode')"
+                style="cursor: pointer;"></i>Kod<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('corporateCode')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('corporateName')"
+                style="cursor: pointer;"></i>Ad<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('corporateName')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('moneyType')"
+                style="cursor: pointer;"></i>Para Türü<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('moneyType')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('requestNumber')"
+                style="cursor: pointer;"></i>Talep<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('requestNumber')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('registrationNumber')"
+                style="cursor: pointer;"></i>Sicil<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('registrationNumber')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('quantity')"
+                style="cursor: pointer;"></i>Adet<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('quantity')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('Amount')"
+                style="cursor: pointer;"></i>Tutar<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('Amount')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('status')"
+                style="cursor: pointer;"></i>Durum<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('status')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('optime')"
+                style="cursor: pointer;"></i>Tarih<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('optime')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('explanation')"
+                  style="cursor: pointer;"></i>Açıklama<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                  (click)="orderAsc('explanation')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('hcpId')"
+                style="cursor: pointer;"></i>Dosya No<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('hcpId')" style="cursor: pointer;"></i></th>
+            <th class="col-md-1">İşlemler</th>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let hcpUploadSearchResponseModel of hcpUploadSearchResponseModels | paginate: {id:'hcpUploadPagination',itemsPerPage:itemsPerPage, currentPage:currentPage}">
+              <td style="display: none;">{{hcpUploadSearchResponseModel.id}}</td>
+              <td>{{hcpUploadSearchResponseModel.corporateCode}}</td>
+              <td>{{hcpUploadSearchResponseModel.corporateName}}</td>
+              <td>{{moneyTypeEnum[hcpUploadSearchResponseModel.moneyType] | translate}}</td>
+              <td>{{hcpUploadSearchResponseModel.requestNumber}}</td>
+              <td>{{hcpUploadSearchResponseModel.registrationNumber}}</td>
+              <td>{{hcpUploadSearchResponseModel.quantity}}</td>
+              <td>{{hcpUploadSearchResponseModel.amount | number: '2.0-2'}}</td>
+              <td>{{statusEnum[hcpUploadSearchResponseModel.status] | translate}}</td>
+              <td>{{hcpUploadSearchResponseModel.optime | date: 'dd-MM-yyyy'}}</td>
+              <td>{{hcpUploadSearchResponseModel.explanation}}</td>
+              <td>{{hcpUploadSearchResponseModel.hcpId}}.{{hcpUploadSearchResponseModel.extension}}</td>
+              <td class="col-md-1">
+                <div class="row">
+                  <i class="fa fa-download fa-2x  col-md-6" style="cursor: pointer;"
+                    (click)="downloadFileByHcpId(hcpUploadSearchResponseModel.hcpId+'.'+hcpUploadSearchResponseModel.extension)"
+                    [ngStyle]="{'display':'Corporate.GetById' | operationclaim}"></i>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!--pagination-->
+  <div class="row p-2">
+    <div class="col-md-10">
+      <pagination-controls id="hcpUploadPagination" (pageChange)="currentPage = $event"></pagination-controls>
+    </div>
+  </div>
+
+</div>

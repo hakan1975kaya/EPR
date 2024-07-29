@@ -1,0 +1,163 @@
+<div class="container-fluid" role="main">
+
+  <!--Icon-->
+  <div class="row">
+    <div class="col-md-1 border-0"><i class="fa fa-caret-square-o-down  fa-2x" aria-hidden="true"></i></div>
+    <div class="col-md-11">
+      <h5>Menü Yetkilendirme İşlemleri</h5>
+    </div>
+  </div>
+
+  <div class="row">
+    <!--Search Form-->
+    <form [formGroup]="searchForm" (ngSubmit)="search()">
+      <!--card-->
+     <!--card-->
+     <div class="card p-2 border-0 ">
+      <div class="card-body bg-secondary text-white ">
+        <div class="row">
+          <!--filter-->
+          <div class="col-md-10">
+            <div class="form-group">
+              <input type="text" class="form-control" formControlName="filter" name="filter" id="filter"
+                placeholder="Menü Adı, Açıklama, Menü Yolu ile arama yap.." required minlength="1">
+              <div class="alert alert-danger"
+                *ngIf="searchForm.get('filter')?.hasError('required')  && searchForm.get('filter')?.dirty">
+                Menü Adı, Açıklama, Menü Yolu girmek zorundasınız</div>
+              <div class="alert alert-danger"
+                *ngIf=" searchForm.get('filter')?.hasError('minlength')  && searchForm.get('filter')?.dirty">En
+                az 1 Harf girmek zorundasınız
+              </div>
+            </div>
+          </div>
+
+            <!--Search Button-->
+            <div class="col-md-1">
+              <div class="form-group">
+                <button type="button" class="btn btn-warning text-white" name="search" (click)="search()"
+                  [disabled]="!searchForm.valid" style="cursor: pointer;"
+                  [ngStyle]="{'display':'Menu.Search' | operationclaim}">Ara</button>
+              </div>
+            </div>
+
+            <!--Clear Button-->
+            <div class="col-md-1">
+              <div class="form-group">
+                <button type="button" class="btn btn-light" name="clear" (click)="clear()"
+                  style="cursor: pointer;">Temizle</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!--Table-->
+  <div class="card p-2">
+    <div class="card-body">
+      <div class="table-responsive" id="divSerach">
+        <table class="table align-items-center table-flush" id="tblSearch" name="tblSearch">
+          <thead>
+            <th style="display: none;"><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('id')" style="cursor: pointer;"></i>Id<i class="fa fa-arrow-circle-up" aria-hidden="true" (click)="orderAsc('id')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('name')" style="cursor: pointer;"></i>Menü Adı<i class="fa fa-arrow-circle-up" aria-hidden="true" (click)="orderAsc('name')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('description')" style="cursor: pointer;"></i>Açıklama<i class="fa fa-arrow-circle-up" aria-hidden="true" (click)="orderAsc('description')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('path')" style="cursor: pointer;"></i>Menü Yolu<i class="fa fa-arrow-circle-up" aria-hidden="true" (click)="orderAsc('path')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('menuOrder')" style="cursor: pointer;"></i>Menü Sırası<i class="fa fa-arrow-circle-up" aria-hidden="true" (click)="orderAsc('menuOrder')" style="cursor: pointer;"></i></th>
+            <th class="col-md-1">İşlemler</th>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let menuSearchResponseModel of menuSearchResponseModels | paginate: {id:'menuPagination',itemsPerPage:itemsPerPage, currentPage:currentPage}">
+              <td style="display: none;">{{menuSearchResponseModel.id}}</td>
+              <td>{{menuSearchResponseModel.name}}</td>
+              <td>{{menuSearchResponseModel.description}}</td>
+              <td>{{menuSearchResponseModel.path}}</td>
+              <td>{{menuSearchResponseModel.menuOrder}}</td>
+              <td class="col-md-1">
+                <div class="row">
+                  <i class="fa fa-pencil fa-2x  col-md-6" style="color: steelblue;cursor: pointer;"
+                    (click)="openMenuOperationClaimModal(menuSearchResponseModel.id)"
+                    [ngStyle]="{'display':'MenuOperationClaim.Update' | operationclaim}"></i>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!--pagination-->
+  <div class="row p-2">
+    <div class="col-md-10">
+      <pagination-controls id="menuPagination" (pageChange)="currentPage = $event"></pagination-controls>
+    </div>
+  </div>
+
+
+  <!--bottoms-->
+  <div class="col-md-1">
+    <div class="row">
+      <i class="fa fa-file-excel-o fa-2x col-md-6" style="color:green;cursor: pointer;" (click)="exportToExcel()"
+        [ngStyle]="{'display':'Menu.GetList' | operationclaim}"></i>
+      <i class="fa fa-file-pdf-o fa-2x col-md-6" style="color:red;cursor: pointer;" (click)="exportToPdf()"
+        [ngStyle]="{'display':'Menu.GetList' | operationclaim}"></i>
+    </div>
+  </div>
+  <div class="col-md-1"></div>
+</div>
+
+<!--menuOperationClaim modal-->
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayMenuOperationClaimModal}">
+  <div class="modal-dialog" role="dialog">
+    <div class="modal-content bg-secondary text-white">
+      <div class="modal-header">
+        <h4 class="modal-title">Menü Yetki Ekleme & Düzenleme</h4>
+        <button type="button" class="btn btn-light" aria-label="Close" (click)="onMenuOperationClaimModalCloseHandled()"
+          style="cursor: pointer;">
+          <i class="fa fa-times-circle fa-2x" aria-hidden="true"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card-body bg-secondary text-white">
+            <form [formGroup]="menuOperationClaimForm">
+
+              <!--menuOperationclaim-->
+              <div class="card text-black bg-white" style="height: 30rem;">
+                <div class="card-header">Yetkilendirme İşlemleri</div>
+                <div class="overflow-auto">
+                  <div class="card-body">
+                    <ul *ngFor=" let operationClaimParentListResponseModel of operationClaimParentListResponseModels">
+                      <li value="operationClaimParentListResponseModel.id"><input type="checkbox"
+                          (change)="setParentOperationClaimCheck(operationClaimParentListResponseModel.id,$event)"
+                          [checked]="operationClaimParentListResponseModel.isChecked">
+                        {{operationClaimParentListResponseModel.name}} </li>
+                    </ul>
+
+                  </div>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!--modal footer-->
+      <div class="modal-footer bg-secondary text-white justify-content-center">
+        <div>
+          <button type="button" class="btn btn-warning" (click)="menuOperationClaimCancel()"
+            style="cursor: pointer;">iptal</button>
+        </div>
+        <div>
+          <button type="button" class="btn btn-primary" (click)="menuOperationClaimSave()"
+            [disabled]="!menuOperationClaimForm.valid" style="cursor: pointer;"
+            [ngStyle]="{'display':'MenuOperationClaim.Add' | operationclaim}"
+            [ngStyle]="{'display':'MenuOperationClaim.Update' | operationclaim}">Kaydet</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

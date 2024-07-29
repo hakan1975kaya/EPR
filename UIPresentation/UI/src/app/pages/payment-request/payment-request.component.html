@@ -1,0 +1,363 @@
+<div class="container-fluid" role="main">
+
+  <!--Icon-->
+  <div class="row">
+    <div class="col-md-1 border-0"><i class="fa fa-credit-card fa-2x"></i></div>
+    <div class="col-md-11">
+      <h5>Ödeme Talebi İşlemleri</h5>
+    </div>
+  </div>
+
+  <div class="row">
+    <!--Search Form-->
+    <form [formGroup]="searchForm">
+      <!--card-->
+      <div class="card p-2 border-0 ">
+        <div class="card-body bg-secondary text-white ">
+          <div class="row">
+            <!--filter-->
+            <div class="col-md-10">
+              <div class="form-group">
+                <input type="text" class="form-control" formControlName="filter" name="filter" id="filter"
+                  placeholder="Talep Numarası, Kurum Adı, Sicil Numarası, Referans Numarası, Hesap Numarası,Müşteri Numarası, Ad, Soyad, Kart Yatırma Tarihi ile arama yap..."
+                  required minlength="1">
+                <div class="alert alert-danger"
+                  *ngIf="searchForm.get('filter')?.hasError('required')  && searchForm.get('filter')?.dirty">
+                  Talep Numarası, Kurum Adı, Sicil Numarası, Referans Numarası, Hesap Numarası,Müşteri Numarası, Ad,
+                  Soyad, Kart Yatırma Tarihi girmek zorundasınız</div>
+                <div class="alert alert-danger"
+                  *ngIf=" searchForm.get('filter')?.hasError('minlength')  && searchForm.get('filter')?.dirty">En
+                  az 1 Harf girmek zorundasınız
+                </div>
+              </div>
+            </div>
+
+            <!--Search Button-->
+            <div class="col-md-1">
+              <div class="form-group">
+                <button type="button" class="btn btn-warning text-white" name="search" (click)="search()"
+                  [disabled]="!searchForm.valid" style="cursor: pointer;"
+                  [ngStyle]="{'display':'PaymentRequest.Search' | operationclaim}">Ara</button>
+              </div>
+            </div>
+
+            <!--Clear Button-->
+            <div class="col-md-1">
+              <div class="form-group">
+                <button type="button" class="btn btn-light" name="clear" (click)="clear()"
+                  style="cursor: pointer;">Temizle</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!--call paymentRequestModal-->
+  <div class="row p-2">
+    <div class="col-md-2">
+      <button type="button" class="btn btn-info text-white" (click)="openPaymentRequestModal()" style="cursor: pointer;"
+        [ngStyle]="{'display':'PaymentRequest.Add' | operationclaim}"> <i class="fa fa-plus"></i> Yeni
+        Ödeme Talebi Ekle </button>
+    </div>
+  </div>
+
+  <!--Table Search-->
+  <div class="card p-2">
+    <div class="card-body">
+      <div class="table-responsive" id="divSerach">
+        <table class="table align-items-center table-flush" id="tblSearch" name="tblSearch">
+          <thead>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('requestNumber')"
+                style="cursor: pointer;"></i>Talep<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('requestNumber')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('corporateCode')"
+                style="cursor: pointer;"></i>Kurum<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('corporateCode')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('registrationNumber')"
+                style="cursor: pointer;"></i>Sicil<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('registrationNumber')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('moneyType')"
+                style="cursor: pointer;"></i>Para Türü<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('moneyType')" style="cursor: pointer;"></i></th>
+           <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('quantity')"
+                  style="cursor: pointer;"></i>Adet<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                  (click)="orderAsc('quantity')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('amount')"
+                  style="cursor: pointer;"></i>Tutar<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                  (click)="orderAsc('amount')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('optime')"
+                style="cursor: pointer;"></i>Tarih<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('optime')" style="cursor: pointer;"></i></th>         
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('status')"
+                style="cursor: pointer;"></i>Durumu<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('status')" style="cursor: pointer;"></i></th>
+            <th>İşlemler</th>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let paymentRequestSearchResponseModel of paymentRequestSearchResponseModels | paginate: {id:'paymentRequestPagination',itemsPerPage:itemsPerPagePaymentRequest, currentPage:currentPagePaymentRequest}">
+              <td>{{paymentRequestSearchResponseModel.requestNumber}}</td>
+              <td>{{paymentRequestSearchResponseModel.corporateCode}}-{{paymentRequestSearchResponseModel.corporateName}}</td>
+              <td>{{paymentRequestSearchResponseModel.registrationNumber}}</td>
+              <td>{{moneyTypeEnum[paymentRequestSearchResponseModel.moneyType]}}</td>
+              <td>{{paymentRequestSearchResponseModel.quantity}}</td>
+              <td>{{paymentRequestSearchResponseModel.amount| number: '2.0-2'}}</td>
+              <td>{{paymentRequestSearchResponseModel.optime | date:'dd.MM.yyyy hh:mm:ss'}}</td>
+              <td>{{statusEnum[paymentRequestSearchResponseModel.status] | translate}}</td>
+              <td class="col-md-1">
+                <div class="row">
+                  <i class="fa fa-eye fa-2x col-md-6" style="cursor: pointer;"
+                    (click)="openPaymentRequestModal(paymentRequestSearchResponseModel.id)"
+                    [ngStyle]="{'display':'PaymentRequest.GetById' | operationclaim}"></i>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!--pagination Payment Request-->
+  <div class="row p-2">
+    <div class="col-md-10">
+      <pagination-controls id="paymentRequestPagination"
+        (pageChange)="currentPagePaymentRequest = $event"></pagination-controls>
+    </div>
+  </div>
+
+  <!--bottoms-->
+  <div class="col-md-1">
+    <div class="row">
+      <i class="fa fa-file-excel-o fa-2x col-md-6" style="color:green;cursor: pointer;" (click)="exportToExcel()"
+        [ngStyle]="{'display':'PaymentRequest.GetList' | operationclaim}"></i>
+      <i class="fa fa-file-pdf-o fa-2x col-md-6" style="color:red;cursor: pointer;" (click)="exportToPdf()"
+        [ngStyle]="{'display':'PaymentRequest.GetList' | operationclaim}"></i>
+    </div>
+  </div>
+
+
+  <!--paymentRequest modal-->
+  <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayPaymentRequestModal}">
+    <div class="modal-dialog modal-xl" role="dialog">
+      <div class="modal-content bg-secondary text-white">
+        <div class="modal-header">
+          <h4 class="modal-title">Ödeme Talebi Ekleme & Görüntüleme</h4>
+          <button type="button" class="btn btn-light" aria-label="Close" (click)="onPaymentRequestModalCloseHandled()"
+            style="cursor: pointer;">
+            <i class="fa fa-times-circle fa-2x" aria-hidden="true"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="card">
+            <div class="card-body bg-secondary text-white">
+              <form [formGroup]="paymentRequestForm">
+
+                <!--id-->
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <input type="hidden" class="form-control" formControlName="id" id="id" name="id">
+                    </div>
+                  </div>
+                </div>
+
+                <!--corporateId-->
+                <div class="form-group pt-4">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label for="corporate" class="form-label">Kurum :</label>
+                    </div>
+                    <div class="col-md-8">
+                      <select class="form-select" [(ngModel)]="corporateIdDefault" formControlName="corporateId"
+                        id="corporateId" name="corporateId" (change)="setCorporate($event)" required min=0
+                        max=Number.MAX_VALUE pattern="^[0-9]*$" style="cursor: pointer;"  [attr.disabled]="!editable ? '' : null">
+                        <option value=-1 selected disabled>Kurum Seçiniz</option>
+                        <option *ngFor="let corporateGetListResponseModel of corporateGetListResponseModels"
+                          [value]="corporateGetListResponseModel.id">
+                          {{corporateGetListResponseModel.corporateCode}}-{{corporateGetListResponseModel.corporateName}}
+                        </option>
+                      </select>
+                      <div class="alert alert-danger"
+                        *ngIf="paymentRequestForm.get('corporateId')?.hasError('required') && paymentRequestForm.get('corporateId')?.dirty">
+                        Kurum zorunlu!</div>
+                      <div class="alert alert-danger"
+                        *ngIf="paymentRequestForm.get('corporateId')?.hasError('min') && paymentRequestForm.get('corporateId')?.dirty">
+                        0 dan büyük olması zorunlu!</div>
+                      <div class="alert alert-danger"
+                        *ngIf="paymentRequestForm.get('corporateId')?.hasError('max') && paymentRequestForm.get('corporateId')?.dirty">
+                        {{Number.MAX_VALUE}} den küçük olması zorunlu!</div>
+                      <div class="alert alert-danger"
+                        *ngIf="paymentRequestForm.get('corporateId')?.hasError('pattern') && paymentRequestForm.get('corporateId')?.dirty">
+                        Rakam olması zorunlu!</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!--moneyType-->
+                <div class="form-group pt-4">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label for="moneyType" class="form-label">Para Türü :</label>
+                    </div>
+                    <div class="col-md-8">
+                      <input type="text" class="form-control" formControlName="moneyType" id="moneyType"
+                        name="moneyType" placeholder="Para Türü  Yazınız." readonly
+                        value="{{moneyTypeEnum[selectedCorporate.moneyType]}}">
+                    </div>
+                  </div>
+                </div>
+
+                <!--fileId-->
+                <div *ngIf="isShowFiledId" class="form-group pt-4">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label for="fileId" class="form-label">Dosya :</label>
+                    </div>
+                    <div class="col-md-8">
+                      <select class="form-select" [(ngModel)]="fileDefault" formControlName="fileId" id="fileId" name="fileId"
+                        (change)="setFile($event)" required
+                        style="cursor: pointer">
+                        <option value=-1 selected disabled>Dosya Seçiniz</option>
+                        <option *ngFor="let waitingSftpFile of waitingSftpFiles" [value]="waitingSftpFile">
+                          {{waitingSftpFile}}
+                        </option>
+                      </select>
+                      <div class="alert alert-danger"
+                        *ngIf="paymentRequestForm.get('fileId')?.hasError('required') && paymentRequestForm.get('fileId')?.dirty">
+                        Dosya zorunlu!</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!--requestNumber-->
+                <div *ngIf="selectedCorporate.id>0" class="form-group pt-4">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label for="requestNumber" class="form-label">Ödeme Talep Numarası :</label>
+                    </div>
+                    <div class="col-md-8">
+                      <input type="text" class="form-control" formControlName="requestNumber" id="requestNumber"
+                        name="requestNumber" placeholder="Ödeme Talep Numarası Yazınız." required minlength="3"
+                        readonly>
+                      <div class="alert alert-danger"
+                        *ngIf="paymentRequestForm.get('requestNumber')?.hasError('required') && paymentRequestForm.get('requestNumber')?.dirty">
+                        Ödeme Talep Numarası zorunlu!</div>
+                      <div class="alert alert-danger"
+                        *ngIf="paymentRequestForm.get('requestNumber')?.hasError('minlength') && paymentRequestForm.get('requestNumber')?.dirty">
+                        En
+                        Az 3 Harf zorunlu!</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!--Table PaymentRequestDetail-->
+                <div class="form-group pt-4">
+                  <div class="row">
+                    <div class="card">
+                      <div class="card-body">
+                        <div class="table-responsive" id="divPaymentRequestDetail">
+                          <table class="table align-items-center table-flush" id="tblPaymentRequestDetail" name="tblPaymentRequestDetail">
+                            <thead>
+                              <th>Referans Numarası</th>
+                              <th>Hesap Numarası</th>
+                              <th>Müşteri Numarası</th>
+                              <th>Telefon Numarası</th>
+                              <th>Ad</th>
+                              <th>Soyad</th>
+                              <th>Ödeme Toplamı</th>
+                              <th>Karta Yatırılma Tarihi</th>
+                              <th>Açıklama</th>
+                            </thead>
+                            <tbody>
+                              <tr
+                                *ngFor="let paymentRequestDetailGetByIdResponseModel of paymentRequestDetailGetByIdResponseModels  | paginate: {id:'paymentRequestDetailPagination',itemsPerPage:itemsPerPagePaymentRequestDetail, currentPage:currentPagePaymentRequestDetail}">
+                                <td>{{paymentRequestDetailGetByIdResponseModel.referenceNumber}}</td>
+                                <td>{{paymentRequestDetailGetByIdResponseModel.accountNumber}}</td>
+                                <td>{{paymentRequestDetailGetByIdResponseModel.customerNumber}}</td>
+                                <td>{{paymentRequestDetailGetByIdResponseModel.phoneNumber}}</td>
+                                <td>{{paymentRequestDetailGetByIdResponseModel.firstName}}</td>
+                                <td>{{paymentRequestDetailGetByIdResponseModel.lastName}}</td>
+                                <td>{{paymentRequestDetailGetByIdResponseModel.paymentAmount | number : '1.2-2'}}</td>
+                                <td>{{paymentRequestDetailGetByIdResponseModel.cardDepositDate | date:'dd.MM.yyyy
+                                  hh:mm:ss'}}</td>
+                                <td>{{paymentRequestDetailGetByIdResponseModel.explanation}}</td>
+                              </tr>
+                              <tr>
+                                <td>Toplam Tutar</td>
+                                <td>{{totalAmount | number : '1.2-2'}}</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <!--pagination Payment Request-->
+                          <div class="row p-2">
+                            <div class="col-md-10">
+                              <pagination-controls id="paymentRequestDetailPagination"
+                                (pageChange)="currentPagePaymentRequestDetail = $event"></pagination-controls>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+        <!--modal footer-->
+        <div *ngIf="showSaveButton" class="modal-footer bg-secondary text-white justify-content-center  pt-4">
+          <button type="button" class="btn btn-primary" (click)="sentTandemAndSave()" [disabled]="!paymentRequestForm.valid"
+            style="cursor: pointer;" [ngStyle]="{'display':'PaymentRequest.Add' | operationclaim}"
+            [ngStyle]="{'display':'PaymentRequest.Update' | operationclaim}">Kaydet</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayConfirmModal}">
+    <div class="modal-dialog" role="dialog">
+      <div class="modal-content bg-secondary text-white">
+        <div class="modal-header">
+          <h4 class="modal-title">Ödeme Talebi Yeniden İndirme Onay</h4>
+          <button type="button" class="btn btn-light" aria-label="Close" (click)="onConfirmModalCloseHandled()"> <i
+              class="fa fa-times-circle fa-2x" aria-hidden="true" style="cursor: pointer;"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="card">
+            <div class="card-body bg-secondary text-white">
+              <div class="row">
+                <div class="col-md-12">
+                  <h5>
+                    Ödeme Talebini Tekrar İndirmek İçin Öncekini iptal Etmek İstediğinizden Emin misiniz?
+                  </h5>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-secondary text-white justify-content-center">
+          <div class="row">
+            <div class="col-md-6">
+              <button type="button" class="btn btn-success" (click)="openToPaymentRequestFromConfirm()" style="cursor: pointer;"
+                [ngStyle]="{'display':'PaymentRequest.Delete' | operationclaim}">Evet</button>
+            </div>
+            <div class="col-md-6">
+              <button type="button" class="btn btn-danger" (click)="onConfirmModalCloseHandled()"
+                style="cursor: pointer;">Hayır</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

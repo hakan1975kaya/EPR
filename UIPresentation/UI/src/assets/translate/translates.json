@@ -1,0 +1,426 @@
+[
+    {
+        "english": "None",
+        "turkish": "Hiçbiri"
+    },
+    {
+        "english": "Draft",
+        "turkish": "Taslak"
+    },
+    {
+        "english": "WaitingForApproval",
+        "turkish": "Onay İçin Bekliyor"
+    },
+    {
+        "english": "Approved",
+        "turkish": "Onaylandı"
+    },
+    {
+        "english": "Income",
+        "turkish": "Gelir"
+    },
+    {
+        "english": "Expense",
+        "turkish": "Gider"
+    },
+    {
+        "english": "Stock",
+        "turkish": "Stok"
+    },
+    {
+        "english": "OutActivity",
+        "turkish": "Faaliyet Dışı"
+    },
+    {
+        "english": "InActivity",
+        "turkish": "Faaliyet İçi"
+    },
+    {
+        "english": "SubAccount",
+        "turkish": "Alt"
+    },
+    {
+        "english": "TopAccount",
+        "turkish": "Üst"
+    },
+    {
+        "english": "Post",
+        "turkish": "Posta"
+    },
+    {
+        "english": "Cargo",
+        "turkish": "Kargo"
+    },
+    {
+        "english": "PttBank",
+        "turkish": "Ptt Bank"
+    },
+    {
+        "english": "SocialSites",
+        "turkish": "Sosyal siteler"
+    },
+    {
+        "english": "ValuablePapers",
+        "turkish": "Değerli Kağıtlar"
+    },
+    {
+        "english": "Epost",
+        "turkish": "E Posta"
+    },
+    {
+        "english": "Logistics",
+        "turkish": "Lojistik"
+    },
+    {
+        "english": "Joint",
+        "turkish": "Müşterek"
+    },
+    {
+        "english": "ECommerce",
+        "turkish": "E-Ticaret"
+    },
+    {
+        "english": "Contribution",
+        "turkish": "Katkı"
+    },
+    {
+        "english": "PaymentSystems",
+        "turkish": "Ödeme Sistemleri"
+    },
+    {
+        "english": "International",
+        "turkish": "Uluslararası"
+    },
+    {
+        "english": "LowPriority",
+        "turkish": "Düşük Öncelikli"
+    },
+    {
+        "english": "HighPriority",
+        "turkish": "Yüksek Öncelikli"
+    },
+    {
+        "english": "Revised",
+        "turkish": "Revize"
+    },
+    {
+        "english": "Rejected",
+        "turkish": "Reddedilmiş"
+    },
+    {
+        "english": "Passive",
+        "turkish": "Pasif"
+    },
+    {
+        "english": "Active",
+        "turkish": "Aktif"
+    },
+    {
+        "english": "Cancel",
+        "turkish": "Vazgeçildi"
+    },
+    {
+        "english": "SentForSignature",
+        "turkish": "İmza İçin Gönderildi"
+    },
+    {
+        "english": "Signed",
+        "turkish": "İmzalandı"
+    },
+    {
+        "english": "Yearly",
+        "turkish": "Yıllık"
+    },
+    {
+        "english": "IncomeExpense",
+        "turkish": "Gelir Gider"
+    },
+    {
+        "english": "Debug",
+        "turkish": "Hata Yakalama"
+    },
+    {
+        "english": "Info",
+        "turkish": "Bilgi"
+    },
+    {
+        "english": "Warn",
+        "turkish": "Uyarı"
+    },
+    {
+        "english": "Error",
+        "turkish": "Hata"
+    },
+    {
+        "english": "Fatal",
+        "turkish": "Ölümcül"
+    },
+    {
+        "english": "DEBUD",
+        "turkish": "Hata Yakalama"
+    },
+    {
+        "english": "INFO",
+        "turkish": "Bilgi"
+    },
+    {
+        "english": "WARN",
+        "turkish": "Uyarı"
+    },
+    {
+        "english": "ERROR",
+        "turkish": "Hata"
+    },
+    {
+        "english": "FATAL",
+        "turkish": "Ölümcül"
+    },
+    {
+        "english": "Add",
+        "turkish": "Ekle"
+    },
+    {
+        "english": "Update",
+        "turkish": "Güncelle"
+    },
+    {
+        "english": "FirstItemMaterial",
+        "turkish": "İlk Öğe Malzeme"
+    },
+    {
+        "english": "FromOutside",
+        "turkish": "Dışarıdan"
+    },
+    {
+        "english": "Various",
+        "turkish": "Çeşitli"
+    },
+    {
+        "english": "StampRevenues",
+        "turkish": "Damga Gelirleri"
+    },
+    {
+        "english": "UnregisteredCommunicationRevenues",
+        "turkish": "Kayıtsız İletişim Gelirleri"
+    },
+    {
+        "english": "Budget",
+        "turkish": "Bütçe"
+    },
+    {
+        "english": "Purchase",
+        "turkish": "Mubayaa"
+    },
+    {
+        "english": "BudgetPurchase",
+        "turkish": "Bütçe ve Mubayaa"
+    },
+    {
+        "english": "Üfe",
+        "turkish": "Ufe"
+    },
+    {
+        "english": "Tufe",
+        "turkish": "Tüfe"
+    },
+    {
+        "english": "Annual",
+        "turkish": "Yıllık"
+    },
+    {
+        "english": "Monthly",
+        "turkish": "Aylık"
+    },
+    {
+        "english": "Zero",
+        "turkish": "Referans Yıl"
+    },
+    {
+        "english": "One",
+        "turkish": "Referans Yıldan Bir Yıl Sonra"
+    },
+    {
+        "english": "Two",
+        "turkish": "Referans Yıldan İki Yıl Sonra"
+    },
+    {
+        "english": "HeadOffice",
+        "turkish": "Baş Müdrürlük"
+    },
+    {
+        "english": "Department",
+        "turkish": "Başkanlık"
+    },
+    {
+        "english": "All",
+        "turkish": "Tümü"
+    },
+    {
+        "english": "January",
+        "turkish": "Ocak"
+    },
+    {
+        "english": "February",
+        "turkish": "Şubat"
+    },
+    {
+        "english": "March",
+        "turkish": "Mart"
+    },
+    {
+        "english": "April",
+        "turkish": "Nisan"
+    },
+    {
+        "english": "May",
+        "turkish": "Mayıs"
+    },
+    {
+        "english": "June",
+        "turkish": "Haziran"
+    },
+    {
+        "english": "July",
+        "turkish": "Temmuz"
+    },
+    {
+        "english": "August",
+        "turkish": "Ağustos"
+    },
+    {
+        "english": "September",
+        "turkish": "Eylül"
+    },
+    {
+        "english": "October",
+        "turkish": "Ekim"
+    },
+    {
+        "english": "November",
+        "turkish": "Kasım"
+    },
+    {
+        "english": "December",
+        "turkish": "Aralık"
+    },
+    {
+        "english": "BudgetNone",
+        "turkish": "Yok"
+    },
+    {
+        "english": "BudgetRevenue",
+        "turkish": "GG"
+    },
+    {
+        "english": "BudgetExpense",
+        "turkish": "GD"
+    },
+    {
+        "english": "NotConsumable",
+        "turkish": "DL"
+    },
+    {
+        "english": "InvestmentAllowed",
+        "turkish": "YO"
+    },
+    {
+        "english": "ConsumablesAllowed",
+        "turkish": "SF"
+    },
+    {
+        "english": "StockAllowed",
+        "turkish": "ST"
+    },
+    {
+        "english": "ReadyBuildingLandGranted",
+        "turkish": "HO"
+    },
+    {
+        "english": "TenderPath",
+        "turkish": "HY"
+    },
+    {
+        "english": "ExtraWorking",
+        "turkish": "FC"
+    },
+    {
+        "english": "Depreciation",
+        "turkish": "AT"
+    },
+    {
+        "english": "MDV",
+        "turkish": "MD"
+    },
+    {
+        "english": "Stock",
+        "turkish": "ST"
+    },
+    {
+        "english": "ForeignCurrency",
+        "turkish": "YP"
+    },
+    {
+        "english": "Investment",
+        "turkish": "YT"
+    },
+    {
+        "english": "None",
+        "turkish": "Yok"
+    },
+    {
+        "english": "LowPriority",
+        "turkish": "Düşük"
+    },
+    {
+        "english": "HighPriority",
+        "turkish": "Yüksek"
+    },
+    {
+        "english": "Public",
+        "turkish": "Kamu"
+    },
+    {
+        "english": "Private",
+        "turkish": "Özel"
+    },
+    {
+        "english": true,
+        "turkish": "Evet"
+    },
+    {
+        "english": false,
+        "turkish": "Hayır"
+    },
+    {
+        "english": "DownloadedFromSftp",
+        "turkish": "Sftp den Dosya İndirildi"
+    },
+    {
+        "english": "DownloadedFromApi",
+        "turkish": "Api den  Dosya İndirildi"
+    },
+    {
+        "english": "SentToTandem",
+        "turkish": "Data Tandem e gönderildi"
+    },
+    {
+        "english": "SummaryWaitingForApproval",
+        "turkish": "Ödeme Onayı Bekliyor"
+    },
+    {
+        "english": "SummaryApproved",
+        "turkish": "Ödeme Onayı Tamamlandı"
+    },
+    {
+        "english": "SummaryRejected",
+        "turkish": "Ödeme İptal Edildi"
+    },
+    {
+        "english": "Percentage",
+        "turkish": "%"
+    },
+    {
+        "english": "Quantity",
+        "turkish": "Adet"
+    }
+]

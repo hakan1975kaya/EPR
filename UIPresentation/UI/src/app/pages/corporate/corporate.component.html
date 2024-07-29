@@ -1,0 +1,477 @@
+<div class="container-fluid" role="main">
+
+  <!--Icon-->
+  <div class="row">
+    <div class="col-md-1 border-0"><i class="fa fa-list-alt fa-2x"></i></div>
+    <div class="col-md-11">
+      <h5>Kurum Tanımlama İşlemleri</h5>
+    </div>
+  </div>
+
+  <div class="row">
+    <!--Search Form-->
+    <form [formGroup]="searchForm">
+      <!--card-->
+      <div class="card p-2 border-0 ">
+        <div class="card-body bg-secondary text-white ">
+          <div class="row">
+            <!--filter-->
+            <div class="col-md-10">
+              <div class="form-group">
+                <input type="text" class="form-control" formControlName="filter" name="filter" id="filter"
+                  placeholder="Kurum Adı, Kurum Kodu ile arama yap.." required minlength="1">
+                <div class="alert alert-danger"
+                  *ngIf="searchForm.get('filter')?.hasError('required')  && searchForm.get('filter')?.dirty">
+                  Kurum Adı, Kurum Kodu girmek zorundasınız</div>
+                <div class="alert alert-danger"
+                  *ngIf=" searchForm.get('filter')?.hasError('minlength')  && searchForm.get('filter')?.dirty">En
+                  az 1 Harf girmek zorundasınız
+                </div>
+              </div>
+            </div>
+
+            <!--Search Button-->
+            <div class="col-md-1">
+              <div class="form-group">
+                <button type="button" class="btn btn-warning text-white" name="search" (click)="search()"
+                  [disabled]="!searchForm.valid" style="cursor: pointer;"
+                  [ngStyle]="{'display':'Corporate.Search' | operationclaim}">Ara</button>
+              </div>
+            </div>
+
+            <!--Clear Button-->
+            <div class="col-md-1">
+              <div class="form-group">
+                <button type="button" class="btn btn-light" name="clear" (click)="clear()"
+                  style="cursor: pointer;">Temizle</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!--call CorporateModal-->
+  <div class="row p-2">
+    <div class="col-md-2">
+      <button type="button" class="btn btn-info text-white" (click)="openCorporateModal()" style="cursor: pointer;"
+        [ngStyle]="{'display':'Corporate.Add' | operationclaim}"> <i class="fa fa-plus"></i> Yeni
+        Kurum Ekle </button>
+    </div>
+  </div>
+
+  <!--Table-->
+  <div class="card p-2">
+    <div class="card-body">
+      <div class="table-responsive" id="divSerach">
+        <table class="table align-items-center table-flush" id="tblSearch" name="tblSearch">
+          <thead>
+            <th style="display: none;"><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('id')"
+                style="cursor: pointer;"></i>Id<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('id')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('corporateCode')"
+                style="cursor: pointer;"></i>Kod<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('corporateCode')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('corporateName')"
+                style="cursor: pointer;"></i>Ad<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('corporateName')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('corporateAccountNo')"
+                style="cursor: pointer;"></i>Hesap No<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('corporateAccountNo')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('moneyType')"
+                style="cursor: pointer;"></i>Para Türü<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('moneyType')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('prefix')"
+                style="cursor: pointer;"></i>Sftp Kullanıcı Adı<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('prefix')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('comissionType')"
+                style="cursor: pointer;"></i>Kom Tür<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('comissionType')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('comissionMoneyType')"
+                style="cursor: pointer;"></i>Kom Para Türü<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('comissionMoneyType')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('comission')"
+                style="cursor: pointer;"></i>Kom<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('comission')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('comissionAccountNo')"
+                style="cursor: pointer;"></i>Kom Hesap No<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('comissionAccountNo')" style="cursor: pointer;"></i></th>
+            <th class="col-md-1">İşlemler</th>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let corporateSearchResponseModel of corporateSearchResponseModels | paginate: {id:'corporatePagination',itemsPerPage:itemsPerPage, currentPage:currentPage}">
+              <td style="display: none;">{{corporateSearchResponseModel.id}}</td>
+              <td>{{corporateSearchResponseModel.corporateCode}}</td>
+              <td>{{corporateSearchResponseModel.corporateName}}</td>
+              <td>{{corporateSearchResponseModel.corporateAccountNo}}</td>
+              <td>{{moneyTypeEnum[corporateSearchResponseModel.moneyType]}}</td>
+              <td>{{corporateSearchResponseModel.prefix}}</td>
+              <td>{{comissionTypeEnum[corporateSearchResponseModel.comissionType] | translate}}</td>
+              <td>{{comissionMoneyTypeEnum[corporateSearchResponseModel.comissionMoneyType]}}</td>
+              <td>{{corporateSearchResponseModel.comission}}</td>
+              <td>{{corporateSearchResponseModel.comissionAccountNo}}</td>
+              <td class="col-md-1">
+                <div class="row">
+                  <i class="fa fa-pencil fa-2x  col-md-6" style="color: steelblue;cursor: pointer;"
+                    (click)="openCorporateModal(corporateSearchResponseModel.id)"
+                    [ngStyle]="{'display':'Corporate.Update' | operationclaim}"></i>
+                  <i class="fa fa-trash fa-2x col-md-6" style="color: red;cursor: pointer;"
+                    (click)="openConfirmModal(corporateSearchResponseModel.id)"
+                    [ngStyle]="{'display':'Corporate.Delete' | operationclaim}"></i>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!--pagination-->
+  <div class="row p-2">
+    <div class="col-md-10">
+      <pagination-controls id="corporatePagination" (pageChange)="currentPage = $event"></pagination-controls>
+    </div>
+  </div>
+
+  <!--bottoms-->
+  <div class="col-md-1">
+    <div class="row">
+      <i class="fa fa-file-excel-o fa-2x col-md-6" style="color:green;cursor: pointer;" (click)="exportToExcel()"
+        [ngStyle]="{'display':'Corporate.GetList' | operationclaim}"></i>
+      <i class="fa fa-file-pdf-o fa-2x col-md-6" style="color:red;cursor: pointer;" (click)="exportToPdf()"
+        [ngStyle]="{'display':'Corporate.GetList' | operationclaim}"></i>
+    </div>
+  </div>
+</div>
+<div class="col-md-1"></div>
+
+<!--Corporate modal-->
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayCorporateModal}">
+  <div class="modal-dialog modal-lg" role="dialog">
+    <div class="modal-content bg-secondary text-white">
+      <div class="modal-header">
+        <h4 class="modal-title">Kurum Ekleme & Düzenleme</h4>
+        <button type="button" class="btn btn-light" aria-label="Close" (click)="onCorporateModalCloseHandled()"
+          style="cursor: pointer;">
+          <i class="fa fa-times-circle fa-2x" aria-hidden="true"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card-body bg-secondary text-white">
+            <form [formGroup]="corporateForm">
+
+              <!--id-->
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-md-12">
+                    <input type="hidden" class="form-control" formControlName="id" id="id" name="id">
+                  </div>
+                </div>
+              </div>
+
+              <!--corporateCode-->
+              <div class="form-group pt-4">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label for="corporateCode" class="form-label">Kurum Kodu :</label>
+                  </div>
+                  <div class="col-md-8">
+                    <input type="text" class="form-control" formControlName="corporateCode" id="corporateCode"
+                      name="corporateCode" placeholder="Kurum Kodu Yazınız." required min=0 max=Number.MAX_VALUE
+                      pattern="^[0-9]*$">
+                    <div class="alert alert-danger"
+                      *ngIf="corporateForm.get('corporateCode')?.hasError('required') && corporateForm.get('corporateCode')?.dirty">
+                      Kurum Kodu zorunlu!</div>
+                    <div class="alert alert-danger"
+                      *ngIf="corporateForm.get('corporateCode')?.hasError('min') && corporateForm.get('corporateCode')?.dirty">
+                      0 dan büyük olması zorunlu!</div>
+                    <div class="alert alert-danger"
+                      *ngIf="corporateForm.get('corporateCode')?.hasError('max') && corporateForm.get('corporateCode')?.dirty">
+                      {{Number.MAX_VALUE}} den küçük olması zorunlu!</div>
+                    <div class="alert alert-danger"
+                      *ngIf="corporateForm.get('corporateCode')?.hasError('pattern') && corporateForm.get('corporateCode')?.dirty">
+                      Rakam olması zorunlu!</div>
+                  </div>
+                </div>
+              </div>
+
+              <!--corporateName-->
+              <div class="form-group pt-4">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label for="corporateName" class="form-label">Kurum Adı :</label>
+                  </div>
+                  <div class="col-md-8">
+                    <input type="text" class="form-control" formControlName="corporateName" id="corporateName"
+                      name="corporateName" placeholder="Kurum Adı Yazınız." required minlength="3">
+                    <div class="alert alert-danger"
+                      *ngIf="corporateForm.get('corporateName')?.hasError('required') && corporateForm.get('corporateName')?.dirty">
+                      Kurum Adı zorunlu!</div>
+                    <div class="alert alert-danger"
+                      *ngIf="corporateForm.get('corporateName')?.hasError('minlength') && corporateForm.get('corporateName')?.dirty">
+                      En
+                      Az 3 Harf zorunlu!</div>
+                  </div>
+                </div>
+              </div>
+
+              <!--corporateAccountNo-->
+              <div class="form-group pt-4">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label for="corporateAccountNo" class="form-label">Kurum Hesap No :</label>
+                  </div>
+                  <div class="col-md-8">
+                    <input type="text" class="form-control" formControlName="corporateAccountNo" id="corporateAccountNo"
+                      name="corporateAccountNo" placeholder="Kurum Kodu Yazınız." required min=0 max=Number.MAX_VALUE
+                      pattern="^[0-9]*$">
+                    <div class="alert alert-danger"
+                      *ngIf="corporateForm.get('corporateAccountNo')?.hasError('required') && corporateForm.get('corporateAccountNo')?.dirty">
+                      Kurum Hesap No zorunlu!</div>
+                    <div class="alert alert-danger"
+                      *ngIf="corporateForm.get('corporateAccountNo')?.hasError('min') && corporateForm.get('corporateAccountNo')?.dirty">
+                      0 dan büyük olması zorunlu!</div>
+                    <div class="alert alert-danger"
+                      *ngIf="corporateForm.get('corporateAccountNo')?.hasError('max') && corporateForm.get('corporateAccountNo')?.dirty">
+                      {{Number.MAX_VALUE}} den küçük olması zorunlu!</div>
+                    <div class="alert alert-danger"
+                      *ngIf="corporateForm.get('corporateAccountNo')?.hasError('pattern') && corporateForm.get('corporateAccountNo')?.dirty">
+                      Rakam olması zorunlu!</div>
+                  </div>
+                </div>
+              </div>
+
+              <!--moneyType-->
+              <div class="form-group pt-4">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label for="moneyType" class="form-label">Para Türü :</label>
+                  </div>
+                  <div class="col-md-8">
+                    <select class="form-select" [(ngModel)]="moneyTypeDefault" formControlName="moneyType"
+                      id="moneyType" name="moneyType" (change)="setMoneyType($event)" required style="cursor: pointer;">
+                      <option value=-1 selected disabled>Para Türü Seçiniz</option>
+                      <option [value]=moneyTypeEnum.TL>TL</option>
+                      <option [value]=moneyTypeEnum.USD>USD</option>
+                      <option [value]=moneyTypeEnum.EUR>EUR</option>
+                    </select>
+                    <div class="alert alert-danger"
+                      *ngIf="corporateForm.get('moneyType')?.hasError('required') && corporateForm.get('moneyType')?.dirty">
+                      Para Türü zorunlu!</div>
+                  </div>
+                </div>
+              </div>
+
+              <!--prefix-->
+              <div class="form-group pt-4">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label for="prefix" class="form-label">Sftp Kullanıcı Adı:</label>
+                  </div>
+                  <div class="col-md-8">
+                    <input type="text" class="form-control" formControlName="prefix" id="prefix" name="prefix"
+                      placeholder="Sftp Kullanıcı Adı Yazınız." required minlength="1">
+                    <div class="alert alert-danger"
+                      *ngIf="corporateForm.get('prefix')?.hasError('required') && corporateForm.get('prefix')?.dirty">
+                      Sftp Kullanıcı Adı zorunlu!</div>
+                    <div class="alert alert-danger"
+                      *ngIf="corporateForm.get('prefix')?.hasError('minlength') && corporateForm.get('prefix')?.dirty">
+                      En
+                      Az 1 Harf zorunlu!</div>
+                  </div>
+                </div>
+              </div>
+
+              <!--comissionType-->
+              <div class="form-group pt-4">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label for="comissionType" class="form-label">Komisyon Türü :</label>
+                  </div>
+                  <div class="col-md-8">
+                    <select class="form-select" [(ngModel)]="comissionTypeDefault" formControlName="comissionType"
+                      id="comissionType" name="comissionType" (change)="setComissionType($event)" required
+                      style="cursor: pointer;">
+                      <option value=-1 selected disabled>Komisyon Türü Seçiniz</option>
+                      <option [value]=comissionTypeEnum.Percentage> % </option>
+                      <option [value]=comissionTypeEnum.Quantity> Adet </option>
+                    </select>
+                    <div class="alert alert-danger"
+                      *ngIf="corporateForm.get('comissionType')?.hasError('required') && corporateForm.get('comissionType')?.dirty">
+                      Komisyon Türü zorunlu!</div>
+                  </div>
+                </div>
+              </div>
+
+              <!--comissionMoneyType-->
+              <div class="form-group pt-4">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label for="comissionMoneyType" class="form-label">Komisyon Para Türü :</label>
+                  </div>
+                  <div class="col-md-8">
+                    <select class="form-select" [(ngModel)]="comissionMoneyTypeDefault"
+                      formControlName="comissionMoneyType" id="comissionMoneyType" name="comissionMoneyType"
+                      (change)="setComissionMoneyType($event)" required style="cursor: pointer;" readonly>
+                      <option value=-1 selected disabled>Para Türü Seçiniz</option>
+                      <option [value]=comissionMoneyTypeEnum.TL>TL</option>
+                      <option [value]=comissionMoneyTypeEnum.USD>USD</option>
+                      <option [value]=comissionMoneyTypeEnum.EUR>EUR</option>
+                    </select>
+                    <div class="alert alert-danger"
+                      *ngIf="corporateForm.get('comissionMoneyType')?.hasError('required') && corporateForm.get('comissionMoneyType')?.dirty">
+                      Komisyon Para Türü zorunlu!</div>
+                  </div>
+                </div>
+              </div>
+
+              <!--comission Percentage-->
+              <div *ngIf="selectedComissionType==comissionTypeEnum.Percentage">
+                <div class="form-group pt-4">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label for="comissionPercentage" class="form-label">Komisyon :</label>
+                    </div>
+                    <div class="col-md-8">
+
+                      <input type="text" class="form-control" formControlName="comissionPercentage"
+                        id="comissionPercentage" name="comissionPercentage"
+                        placeholder="Komisyon Değerini 0-100 Aralığında Olacak Şekilde Giriniz." required min=0 max=100
+                        pattern="^[0-9.-]*$">
+
+                      <div class="alert alert-danger"
+                        *ngIf="corporateForm.get('comissionPercentage')?.hasError('required') && corporateForm.get('comissionPercentage')?.dirty">
+                        Komisyon zorunlu!</div>
+
+                      <div class="alert alert-danger"
+                        *ngIf="corporateForm.get('comissionPercentage')?.hasError('min') && corporateForm.get('comissionPercentage')?.dirty">
+                        0 dan büyük olması zorunlu!</div>
+
+                      <div class="alert alert-danger"
+                        *ngIf="corporateForm.get('comissionPercentage')?.hasError('max') && corporateForm.get('comissionPercentage')?.dirty">
+                        100 den küçük olması zorunlu!</div>
+
+                      <div class="alert alert-danger"
+                        *ngIf="corporateForm.get('comissionPercentage')?.hasError('pattern') && corporateForm.get('comissionPercentage')?.dirty">
+                        Rakam olması zorunlu!</div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <!--comission Quantity-->
+              <div *ngIf="selectedComissionType==comissionTypeEnum.Quantity">
+                <div class="form-group pt-4">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label for="comissionQuantity" class="form-label">Komisyon :</label>
+                    </div>
+                    <div class="col-md-8">
+
+                      <input type="text" class="form-control" formControlName="comissionQuantity" id="comissionQuantity"
+                        name="comissionQuantity" placeholder="Komisyon Değerini Tam Sayı Olarak Giriniz" required min=0
+                        max=Number.MAX_VALUE pattern="^[0-9.-]*$">
+
+                      <div class="alert alert-danger"
+                        *ngIf="corporateForm.get('comissionQuantity')?.hasError('required') && corporateForm.get('comissionQuantity')?.dirty">
+                        Komisyon zorunlu!</div>
+
+                      <div class="alert alert-danger"
+                        *ngIf="corporateForm.get('comissionQuantity')?.hasError('min') && corporateForm.get('comissionQuantity')?.dirty">
+                        0 dan büyük olması zorunlu!</div>
+
+                      <div class="alert alert-danger"
+                        *ngIf="corporateForm.get('comissionQuantity')?.hasError('max') && corporateForm.get('comissionQuantity')?.dirty">
+                        {{Number.MAX_VALUE}} den küçük olması zorunlu!</div>
+
+                      <div class="alert alert-danger"
+                        *ngIf="corporateForm.get('comissionQuantity')?.hasError('pattern') && corporateForm.get('comissionQuantity')?.dirty">
+                        Rakam olması zorunlu!</div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!--comissionAccountNo-->
+              <div class="form-group pt-4">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label for="comissionAccountNo" class="form-label">Komisyon Hesap No :</label>
+                  </div>
+                  <div class="col-md-8">
+                    <input type="text" class="form-control" formControlName="comissionAccountNo" id="comissionAccountNo"
+                      name="comissionAccountNo" placeholder="Kurum Kodu Yazınız." required min=0 max=Number.MAX_VALUE
+                      pattern="^[0-9]*$" readonly>
+                    <div class="alert alert-danger"
+                      *ngIf="corporateForm.get('comissionAccountNo')?.hasError('required') && corporateForm.get('comissionAccountNo')?.dirty">
+                      Komisyon Hesap No zorunlu!</div>
+                    <div class="alert alert-danger"
+                      *ngIf="corporateForm.get('comissionAccountNo')?.hasError('min') && corporateForm.get('comissionAccountNo')?.dirty">
+                      0 dan büyük olması zorunlu!</div>
+                    <div class="alert alert-danger"
+                      *ngIf="corporateForm.get('comissionAccountNo')?.hasError('max') && corporateForm.get('comissionAccountNo')?.dirty">
+                      {{Number.MAX_VALUE}} den küçük olması zorunlu!</div>
+                    <div class="alert alert-danger"
+                      *ngIf="corporateForm.get('comissionAccountNo')?.hasError('pattern') && corporateForm.get('comissionAccountNo')?.dirty">
+                      Rakam olması zorunlu!</div>
+                  </div>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+      <!--modal footer-->
+      <div class="modal-footer bg-secondary text-white justify-content-center  pt-4">
+        <button type="button" class="btn btn-primary" (click)="save()" [disabled]="!corporateForm.valid"
+          style="cursor: pointer;" [ngStyle]="{'display':'Corporate.Add' | operationclaim}"
+          [ngStyle]="{'display':'Corporate.Update' | operationclaim}">Kaydet</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayConfirmModal}">
+  <div class="modal-dialog" role="dialog">
+    <div class="modal-content bg-secondary text-white">
+      <div class="modal-header">
+        <h4 class="modal-title">Kurum Silme Onay</h4>
+        <button type="button" class="btn btn-light" aria-label="Close" (click)="onConfirmModalCloseHandled()"> <i
+            class="fa fa-times-circle fa-2x" aria-hidden="true" style="cursor: pointer;"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card-body bg-secondary text-white">
+            <div class="row">
+              <div class="col-md-12">
+                <h5>
+                  Silmek İstediğinizden Emin misiniz?
+                </h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer bg-secondary text-white justify-content-center">
+        <div class="row">
+          <div class="col-md-6">
+            <button type="button" class="btn btn-success" (click)="deleteFromConfirm()" style="cursor: pointer;"
+              [ngStyle]="{'display':'Corporate.Delete' | operationclaim}">Evet</button>
+          </div>
+          <div class="col-md-6">
+            <button type="button" class="btn btn-danger" (click)="onConfirmModalCloseHandled()"
+              style="cursor: pointer;">Hayır</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Abstract\**" />
+    <Compile Remove="Concrete\Dtos\QuestionDetailDtos\**" />
+    <Compile Remove="Concrete\Dtos\QuestionGroupDtos\**" />
+    <Compile Remove="Concrete\Dtos\SurveyFolderDtos\**" />
+    <Compile Remove="Concrete\Dtos\SurveyQuestionDtos\**" />
+    <Compile Remove="Concrete\Dtos\UserAuthorityDtos\**" />
+    <EmbeddedResource Remove="Abstract\**" />
+    <EmbeddedResource Remove="Concrete\Dtos\QuestionDetailDtos\**" />
+    <EmbeddedResource Remove="Concrete\Dtos\QuestionGroupDtos\**" />
+    <EmbeddedResource Remove="Concrete\Dtos\SurveyFolderDtos\**" />
+    <EmbeddedResource Remove="Concrete\Dtos\SurveyQuestionDtos\**" />
+    <EmbeddedResource Remove="Concrete\Dtos\UserAuthorityDtos\**" />
+    <None Remove="Abstract\**" />
+    <None Remove="Concrete\Dtos\QuestionDetailDtos\**" />
+    <None Remove="Concrete\Dtos\QuestionGroupDtos\**" />
+    <None Remove="Concrete\Dtos\SurveyFolderDtos\**" />
+    <None Remove="Concrete\Dtos\SurveyQuestionDtos\**" />
+    <None Remove="Concrete\Dtos\UserAuthorityDtos\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj" />
+  </ItemGroup>
+
+</Project>

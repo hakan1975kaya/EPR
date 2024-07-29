@@ -1,0 +1,285 @@
+<div class="container-fluid" role="main">
+
+  <!--Icon-->
+  <div class="row">
+    <div class="col-md-1 border-0"><i class="fa fa-user-plus fa-2x"></i></div>
+    <div class="col-md-11">
+      <h5>Kullanıcı Tanımlama İşlemleri</h5>
+    </div>
+  </div>
+
+  <div class="row">
+    <!--Search Form-->
+    <form [formGroup]="searchForm">
+      <!--card-->
+      <div class="card p-2 border-0 ">
+        <div class="card-body bg-secondary text-white ">
+          <div class="row">
+            <!--filter-->
+            <div class="col-md-10">
+              <div class="form-group">
+                <input type="text" class="form-control" formControlName="filter" name="filter" id="filter"
+                  placeholder="Ad, Soyad veya Sicil No ile arama yap.." required minlength="1">
+                <div class="alert alert-danger"
+                  *ngIf="searchForm.get('filter')?.hasError('required')  && searchForm.get('filter')?.dirty">
+                  Ad, Soyad veya Sicil No girmek zorundasınız</div>
+                <div class="alert alert-danger"
+                  *ngIf=" searchForm.get('filter')?.hasError('minlength')  && searchForm.get('filter')?.dirty">En
+                  az 1 Harf girmek zorundasınız
+                </div>
+              </div>
+            </div>
+
+            <!--Search Button-->
+            <div class="col-md-1">
+              <div class="form-group">
+                <button type="button" class="btn btn-warning text-white" name="search" (click)="search()"
+                  [disabled]="!searchForm.valid" style="cursor: pointer;"
+                  [ngStyle]="{'display':'User.Search' | operationclaim}">Ara</button>
+              </div>
+            </div>
+
+            <!--Clear Button-->
+            <div class="col-md-1">
+              <div class="form-group">
+                <button type="button" class="btn btn-light" name="clear" (click)="clear()"
+                  style="cursor: pointer;">Temizle</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!--call UserModal-->
+  <div class="row p-2">
+    <div class="col-md-2">
+      <button type="button" class="btn btn-info text-white" (click)="openUserModal()" style="cursor: pointer;"
+        [ngStyle]="{'display':'User.Add' | operationclaim}"> <i class="fa fa-plus"></i> Yeni
+        Kullanıcı Ekle </button>
+    </div>
+  </div>
+
+  <!--Table-->
+  <div class="card p-2">
+    <div class="card-body">
+      <div class="table-responsive" id="divSerach">
+        <table class="table align-items-center table-flush" id="tblSearch" name="tblSearch">
+          <thead>
+            <th style="display: none;"><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('id')" style="cursor: pointer;"></i>Id<i class="fa fa-arrow-circle-up" aria-hidden="true" (click)="orderAsc('id')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('registrationNumber')" style="cursor: pointer;"></i>Sicil No<i class="fa fa-arrow-circle-up" aria-hidden="true" (click)="orderAsc('registrationNumber')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('firstName')" style="cursor: pointer;"></i>Ad<i class="fa fa-arrow-circle-up" aria-hidden="true" (click)="orderAsc('firstName')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('lastName')" style="cursor: pointer;"></i>Soyad<i class="fa fa-arrow-circle-up" aria-hidden="true" (click)="orderAsc('lastName')" style="cursor: pointer;"></i></th>
+            <th class="col-md-1">İşlemler</th>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let userSearchResponseModel of userSearchResponseModels | paginate: {id:'userPagination',itemsPerPage:itemsPerPage, currentPage:currentPage}">
+              <td style="display: none;">{{userSearchResponseModel.id}}</td>
+              <td>{{userSearchResponseModel.registrationNumber}}</td>
+              <td>{{userSearchResponseModel.firstName}}</td>
+              <td>{{userSearchResponseModel.lastName}}</td>
+              <td class="col-md-1">
+                <div class="row">
+                  <i class="fa fa-pencil fa-2x  col-md-6" style="color: steelblue;cursor: pointer;"
+                    (click)="openUserModal(userSearchResponseModel.id)"
+                    [ngStyle]="{'display':'User.Update' | operationclaim}"></i>
+                  <i class="fa fa-trash fa-2x col-md-6" style="color: red;cursor: pointer;"
+                    (click)="openConfirmModal(userSearchResponseModel.id)"
+                    [ngStyle]="{'display':'User.Delete' | operationclaim}"></i>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!--pagination-->
+  <div class="row p-2">
+    <div class="col-md-10">
+      <pagination-controls id="userPagination" (pageChange)="currentPage = $event"></pagination-controls>
+    </div>
+  </div>
+
+  <!--bottoms-->
+  <div class="col-md-1">
+    <div class="row">
+      <i class="fa fa-file-excel-o fa-2x col-md-6" style="color:green;cursor: pointer;" (click)="exportToExcel()"
+        [ngStyle]="{'display':'User.GetList' | operationclaim}"></i>
+      <i class="fa fa-file-pdf-o fa-2x col-md-6" style="color:red;cursor: pointer;" (click)="exportToPdf()"
+        [ngStyle]="{'display':'User.GetList' | operationclaim}"></i>
+    </div>
+  </div>
+</div>
+<div class="col-md-1"></div>
+
+<!--User modal-->
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayUserModal}">
+  <div class="modal-dialog modal-lg" role="dialog">
+    <div class="modal-content bg-secondary text-white">
+      <div class="modal-header">
+        <h4 class="modal-title">Kullanıcı Ekleme & Düzenleme</h4>
+        <button type="button" class="btn btn-light" aria-label="Close" (click)="onUserModalCloseHandled()"
+          style="cursor: pointer;">
+          <i class="fa fa-times-circle fa-2x" aria-hidden="true"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card-body bg-secondary text-white">
+            <form [formGroup]="userForm">
+
+              <!--passwordIsSet-->
+              <div class="form-group">
+                <div class="form-check form-switch xl">
+                  <div class="row">
+                    <div class="col-md-7">
+                    </div>
+                    <div class="col-md-4">
+                      <label for="passwordIsSet" class="form-label">Şifre Gerekli Mi</label>
+                    </div>
+                    <div class="col-md-1">
+                      <input type="checkbox" class="form-check-input" style="width: 60px; height: 30px;cursor: pointer;"
+                        formControlName="passwordIsSet" id="passwordIsSet" name="passwordIsSet"
+                        (change)="setIsPasswordSeted($event)">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <!--id-->
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-md-12">
+                    <input type="hidden" class="form-control" formControlName="id" id="id" name="id">
+                  </div>
+                </div>
+              </div>
+
+              <!--registrationNumber-->
+              <div class="form-group pt-4">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label for="registrationNumber" class="form-label">Sicil No:</label>
+                  </div>
+                  <div class="col-md-8">
+                    <input type="text" class="form-control" formControlName="registrationNumber" id="registrationNumber" name="registrationNumber"
+                      placeholder="Sicil No Yazınız." required min="3">
+                    <div class="alert alert-danger"
+                      *ngIf="userForm.get('registrationNumber')?.hasError('required') && userForm.get('registrationNumber')?.dirty">
+                      Sicil No zorunlu!</div>
+                    <div class="alert alert-danger"
+                      *ngIf="userForm.get('registrationNumber')?.hasError('min') && userForm.get('registrationNumber')?.dirty">
+                      En
+                      Az 3 Harf zorunlu!</div>
+                  </div>
+                </div>
+              </div>
+
+              <!--firstName-->
+              <div class="form-group pt-4">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label for="firstName" class="form-label">Ad:</label>
+                  </div>
+                  <div class="col-md-8">
+                    <input type="text" class="form-control" formControlName="firstName" id="firstName" name="firstName"
+                      placeholder="Adı Yazınız." required minlength="3">
+                    <div class="alert alert-danger"
+                      *ngIf="userForm.get('firstName')?.hasError('required') && userForm.get('firstName')?.dirty">
+                      Ad zorunlu!</div>
+                    <div class="alert alert-danger"
+                      *ngIf="userForm.get('firstName')?.hasError('minlength') && userForm.get('firstName')?.dirty">
+                      En
+                      Az 3 Harf zorunlu!</div>
+                  </div>
+                </div>
+              </div>
+
+              <!--lastName-->
+              <div class="form-group pt-4">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label for="lastName" class="form-label">Soyad:</label>
+                  </div>
+                  <div class="col-md-8">
+                    <input type="text" class="form-control" formControlName="lastName" id="lastName" name="lastName"
+                      placeholder="Soyadı Yazınız." required minlength="3">
+                    <div class="alert alert-danger"
+                      *ngIf="userForm.get('lastName')?.hasError('required') && userForm.get('lastName')?.dirty">
+                      Ad zorunlu!</div>
+                    <div class="alert alert-danger"
+                      *ngIf="userForm.get('lastName')?.hasError('minlength') && userForm.get('lastName')?.dirty">
+                      En
+                      Az 3 Harf zorunlu!</div>
+                  </div>
+                </div>
+              </div>
+
+              <!--password-->
+              <div *ngIf="isPasswordSeted" class="form-group pt-4">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label for="password" class="form-label">Şifre:</label>
+                  </div>
+                  <div class="col-md-8">
+                    <input type="password" class="form-control" formControlName="password" id="password" name="password"
+                      placeholder="Şifre Yazınız.">
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!--modal footer-->
+      <div class="modal-footer bg-secondary text-white justify-content-center  pt-4">
+        <button type="button" class="btn btn-primary" (click)="save()" [disabled]="!userForm.valid"
+          style="cursor: pointer;" [ngStyle]="{'display':'User.Add' | operationclaim}"
+          [ngStyle]="{'display':'User.Update' | operationclaim}">Kaydet</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayConfirmModal}">
+  <div class="modal-dialog" role="dialog">
+    <div class="modal-content bg-secondary text-white">
+      <div class="modal-header">
+        <h4 class="modal-title">Kullanıcı Silme Onay</h4>
+        <button type="button" class="btn btn-light" aria-label="Close" (click)="onConfirmModalCloseHandled()"> <i
+            class="fa fa-times-circle fa-2x" aria-hidden="true" style="cursor: pointer;"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card-body bg-secondary text-white">
+            <div class="row">
+              <div class="col-md-12">
+                <h5>
+                  Silmek İstediğinizden Emin misiniz?
+                </h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer bg-secondary text-white justify-content-center">
+        <div class="row">
+          <div class="col-md-6">
+            <button type="button" class="btn btn-success" (click)="deleteFromConfirm()" style="cursor: pointer;"
+              [ngStyle]="{'display':'User.Delete' | operationclaim}">Evet</button>
+          </div>
+          <div class="col-md-6">
+            <button type="button" class="btn btn-danger" (click)="onConfirmModalCloseHandled()"
+              style="cursor: pointer;">Hayır</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

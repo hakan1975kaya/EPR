@@ -1,0 +1,135 @@
+<div class="container-fluid" role="main">
+
+  <!--Icon-->
+  <div class="row">
+    <div class="col-md-1 border-0"><i class="fa fa-tachometer fa-2x"></i></div>
+    <div class="col-md-11">
+      <h5> Gösterge Paneli</h5>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-1 border-0"></div>
+    <div class="col-md-11">
+      <h5> Statülere Göre Ödemeler</h5>
+    </div>
+  </div>
+
+  <div class="row pt-4">
+    <ngx-charts-bar-vertical 
+    [view]="[1320,500]" 
+    [results]="paymentRequestSummaryTotalOutgoingPaymentResponseModels" 
+    [xAxisLabel]="'Statüler'"
+    [legendTitle]="'Ödeme Talep Statüleri'" 
+    [yAxisLabel]="'Toplam Tutar'" 
+    [legend]="true" 
+    [showXAxisLabel]="true"
+    [showYAxisLabel]="true" 
+    [xAxis]="true" 
+    [yAxis]="true" 
+    [gradient]="true">
+  </ngx-charts-bar-vertical>
+  </div>
+
+  <div class="row">
+    <div class="col-md-1 border-0"></div>
+    <div class="col-md-11">
+      <h5> Kurumlara Yapılan Yıla Göre Aylık Ödemeler</h5>
+    </div>
+  </div>
+
+  <div class="row pt-4">
+    <!--Search Form-->
+    <form [formGroup]="dashboardForm">
+      <!--card-->
+      <div class="card p-2 border-0 ">
+        <div class="card-body bg-secondary text-white ">
+          <div class="row">
+            <!--corporateId-->
+            <div class="col-md-2">
+              <select class="form-select" [(ngModel)]="corporateCodeDefault" formControlName="corporateId"
+                id="corporateId" name="corporateId" required min=0 max=Number.MAX_VALUE pattern="^[0-9]*$"
+                style="cursor: pointer">
+                <option value=-1 selected disabled>Kurum Seçiniz</option>
+                <option *ngFor="let corporateGetListResponseModel of corporateGetListResponseModels"
+                  [value]="corporateGetListResponseModel.id">
+                  {{corporateGetListResponseModel.corporateCode}}-{{corporateGetListResponseModel.corporateName}}
+                </option>
+              </select>
+              <div class="alert alert-danger"
+                *ngIf="dashboardForm.get('corporateId')?.hasError('required') && dashboardForm.get('corporateId')?.dirty">
+                Kurum zorunlu!</div>
+              <div class="alert alert-danger"
+                *ngIf="dashboardForm.get('corporateId')?.hasError('min') && dashboardForm.get('corporateId')?.dirty">
+                0 dan büyük olması zorunlu!</div>
+              <div class="alert alert-danger"
+                *ngIf="dashboardForm.get('corporateId')?.hasError('max') && dashboardForm.get('corporateId')?.dirty">
+                {{Number.MAX_VALUE}} den küçük olması zorunlu!</div>
+              <div class="alert alert-danger"
+                *ngIf="dashboardForm.get('corporateId')?.hasError('pattern') && dashboardForm.get('corporateId')?.dirty">
+                Rakam olması zorunlu!</div>
+            </div>
+
+            <!--year-->
+            <div class="col-md-2">
+              <select class="form-select" [(ngModel)]="yearDefault" formControlName="year" id="year" name="year"
+                required min=2000 max=Number.MAX_VALUE pattern="^[0-9]*$" style="cursor: pointer">
+                <option value=-1 selected disabled>Yıl Seçiniz</option>
+                <option *ngFor="let year of years" [value]="year.value"> {{year.name}}</option>
+              </select>
+              <div class="alert alert-danger"
+                *ngIf="dashboardForm.get('year')?.hasError('required') && dashboardForm.get('year')?.dirty">
+                Yıl zorunlu!</div>
+              <div class="alert alert-danger"
+                *ngIf="dashboardForm.get('year')?.hasError('min') && dashboardForm.get('year')?.dirty">
+               2000 dan büyük olması zorunlu!</div>
+              <div class="alert alert-danger"
+                *ngIf="dashboardForm.get('year')?.hasError('max') && dashboardForm.get('year')?.dirty">
+                {{Number.MAX_VALUE}} den küçük olması zorunlu!</div>
+              <div class="alert alert-danger"
+                *ngIf="dashboardForm.get('year')?.hasError('pattern') && dashboardForm.get('year')?.dirty">
+                Rakam olması zorunlu!</div>
+            </div>
+
+            <div class="col-md-6"></div>
+
+            <!--Search Button-->
+            <div class="col-md-1">
+              <div class="form-group">
+                <button type="button" class="btn btn-warning text-white text-white" name="search" (click)="search()"
+                  [disabled]="!dashboardForm.valid" style="cursor: pointer;">Ara</button>
+              </div>
+            </div>
+
+            <!--Clear Button-->
+            <div class="col-md-1">
+              <div class="form-group">
+                <button type="button" class="btn btn-light" name="clear" (click)="clear()"
+                  style="cursor: pointer;">Temizle</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="row pt-4">
+    <ngx-charts-bar-vertical 
+    [view]="[1320,500]" 
+    [results]="paymentRequestSummaryAmountByCorporateIdYearResponseModels" 
+    [xAxisLabel]="'Aylar'"
+    [legendTitle]="'Ödeme Talepleri'" 
+    [yAxisLabel]="'ödeme Talepleri'" 
+    [legend]="true" 
+    [showXAxisLabel]="true"
+    [showYAxisLabel]="true" 
+    [xAxis]="true" 
+    [yAxis]="true" 
+    [gradient]="true">
+  </ngx-charts-bar-vertical>
+  </div>
+    
+</div>
+

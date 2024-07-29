@@ -1,0 +1,202 @@
+<div class="container-fluid" role="main">
+
+  <!--Icon-->
+  <div class="row">
+    <div class="col-md-1 border-0"><i class="fa fa-database  fa-2x" aria-hidden="true"></i></div>
+    <div class="col-md-11">
+      <h5>Api Log İşlemleri</h5>
+    </div>
+  </div>
+
+  <div class="row">
+    <!--Search Form-->
+    <form [formGroup]="searchForm" (ngSubmit)="search()">
+      <!--card-->
+      <div class="card p-2 border-0 ">
+        <div class="card-body bg-secondary text-white ">
+          <div class="row">
+            <!--filter-->
+            <div class="col-md-8">
+              <div class="form-group">
+                <input type="text" class="form-control" formControlName="filter" name="filter" id="filter" 
+                  placeholder="Sicil No, Sayfa, Hata ile arama yap.. " (keydown.enter)="search()" required>
+              </div>
+              <div class="alert alert-danger"
+                *ngIf="searchForm.get('filter')?.hasError('required')  && searchForm.get('filter')?.dirty">
+                Sicil No, Sayfa, Hata girmek zorundasınız</div>
+              <div class="alert alert-danger"
+                *ngIf=" searchForm.get('filter')?.hasError('minlength')  && searchForm.get('filter')?.dirty">En
+                az 1 Harf girmek zorundasınız
+              </div>
+            </div>
+
+            <!--AuditType-->
+            <div class="col-md-2">
+              <div class="form-group">
+                <select class="form-select" [(ngModel)]="auditDefault" formControlName="audit" id="audit" name="audit"
+                  (change)="setAudit($event)" style="cursor: pointer;">
+                  <option selected [value]=auditEnum.None>Tümü</option>
+                  <option [value]=auditEnum.Debug>Hata Ayıklama</option>
+                  <option [value]=auditEnum.Info>Bilgi</option>
+                  <option [value]=auditEnum.Warn>Uyarı</option>
+                  <option [value]=auditEnum.Error>Hata</option>
+                  <option [value]=auditEnum.Fatal>Ölümcül Hata</option>
+                </select>
+              </div>
+            </div>
+
+            <!--Search Button-->
+            <div class="col-md-1">
+              <div class="form-group">
+                <button type="button" class="btn btn-warning text-white" name="search" (click)="search()"
+                  [disabled]="!searchForm.valid" style="cursor: pointer;"
+                  [ngStyle]="{'display':'ApiLog.Search' | operationclaim}">Ara</button>
+              </div>
+            </div>
+
+            <!--Clear Button-->
+            <div class="col-md-1">
+              <div class="form-group">
+                <button type="button" class="btn btn-light" name="clear" (click)="clear()"
+                  style="cursor: pointer;">Temizle</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!--Table-->
+  <div class="card p-2">
+    <div class="card-body">
+      <div class="table-responsive" id="divSerach">
+        <table class="table align-items-center table-flush" id="tblSearch" name="tblSearch">
+          <thead>
+            <th style="display: none;"><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('id')"
+                style="cursor: pointer;"></i>Id<i class="fa fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('id')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('detail')"
+                style="cursor: pointer;"></i>Detay<i class="fa fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('detail')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('date')"
+                style="cursor: pointer;"></i>Tarih<i class="fa fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('date')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('audit')"
+                style="cursor: pointer;"></i>Deneim Tipi<i class="fa fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('audit')" style="cursor: pointer;"></i></th>
+            <th class="col-md-1">İşlemler</th>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let apiLogSearchResponseModel of apiLogSearchResponseModels | paginate: {id:'apiLogPagination',itemsPerPage:itemsPerPage, currentPage:currentPage}">
+              <td style="display: none;">{{apiLogSearchResponseModel.id}}</td>
+              <td> {{apiLogSearchResponseModel.detail.substring(0,100)}}...</td>
+              <td>{{apiLogSearchResponseModel.date | date:'dd.MM.yyyy hh:mm:ss'}}</td>
+              <td>{{apiLogSearchResponseModel.audit | translate}}</td>
+              <td class="col-md-1">
+                <div class="row">
+                  <i class="fa fa-eye fa-2x  col-md-6" style="cursor: pointer;"
+                    (click)="openApiLogModal(apiLogSearchResponseModel.id)"
+                    [ngStyle]="{'display':'ApiLog.GetList' | operationclaim}"></i>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!--pagination-->
+  <div class="row p-2">
+    <div class="col-md-10">
+      <pagination-controls id="apiLogPagination" (pageChange)="currentPage = $event"></pagination-controls>
+    </div>
+  </div>
+
+  <!--bottoms-->
+  <div class="col-md-1">
+    <div class="row">
+      <i class="fa fa-file-excel-o fa-2x col-md-6" style="color:green;cursor: pointer;" (click)="exportToExcel()"
+        [ngStyle]="{'display':'ApiLog.GetList' | operationclaim}"></i>
+      <i class="fa fa-file-pdf-o fa-2x col-md-6" style="color:red;cursor: pointer;" (click)="exportToPdf()"
+        [ngStyle]="{'display':'ApiLog.GetList' | operationclaim}"></i>
+    </div>
+  </div>
+  <div class="col-md-1"></div>
+</div>
+
+<!--ApiLog modal-->
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayApiLogModal}">
+  <div class="modal-dialog modal-lg" role="dialog">
+    <div class="modal-content bg-secondary text-white">
+      <div class="modal-header">
+        <h4 class="modal-title">Api Log Görüntüleme</h4>
+        <button type="button" class="btn btn-light" aria-label="Close" (click)="onApiLogModalCloseHandled()"
+          style="cursor: pointer;">
+          <i class="fa fa-times-circle fa-2x" aria-hidden="true"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card-body bg-secondary text-white">
+            <form [formGroup]="apiLogForm">
+
+              <!--id-->
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-md-12">
+                    <input type="hidden" class="form-control" formControlName="id" id="id" name="id" readonly>
+                  </div>
+                </div>
+              </div>
+
+              <!--detail-->
+              <div class="form-group pt-4">
+                <div class="row">
+                  <div class="col-md-2">
+                    <label for="detail" class="form-label">Detay :</label>
+                  </div>
+                  <div class="col-md-10">
+                    <textarea type="text" rows="10" class="form-control" formControlName="detail" id="detail"
+                      name="detail" readonly></textarea>
+                  </div>
+                </div>
+
+                <!--date-->
+                <div class="form-group pt-4">
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label for="date" class="form-label">Tarih :</label>
+                    </div>
+                    <div class="col-md-10">
+                      <input type="text" class="form-control" formControlName="date" id="date" name="date" readonly>
+                    </div>
+                  </div>
+
+                  <!--audit-->
+                  <div class="form-group pt-4">
+                    <div class="row">
+                      <div class="col-md-2">
+                        <label for="audit" class="form-label">Denetim Tipi :</label>
+                      </div>
+                      <div class="col-md-10">
+                        <input type="text" class="form-control" formControlName="audit" id="audit" name="audit"
+                          readonly>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!--modal footer-->
+      <div class="modal-footer bg-secondary text-white justify-content-center  pt-4">
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,34 @@
+<div class="container row justify-content-center" role="main">
+  <div class="card  text-white bg-secondary col-md-4">
+    <div class="card-header"> <h3 ngbTooltip="External Paymet Request"> EPR </h3></div>
+    <div class="card-body">
+      <h5 class="card-title">Giriş</h5>
+      <form [formGroup]="loginForm">
+
+        <!--registrationNumber-->
+        <div class="form-gorup p-2">
+          <div>Sicil No:</div>
+          <input class="form-control" type="text" id="registrationNumber" name="registrationNumber" formControlName="registrationNumber" placeholder="Sicil No" required>
+          <div class="alert alert-danger"
+            *ngIf="loginForm.get('registrationNumber')?.hasError('required') && loginForm.get('registrationNumber')?.dirty">
+           Sicil No zorunlu</div>
+      </div>
+
+        <!--passWord-->
+        <div class="form-gorup p-2">
+          <div>Şifre:</div>
+          <input class="form-control" type="password" id="password" name="passWord" formControlName="password" placeholder="Şifre" required>
+          <div class="alert alert-danger"
+            *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.dirty">
+            Şifre zorunlu</div>
+        </div>
+
+           <!--login button-->
+           <div class="text-center p-2">
+            <button type="button" class="btn btn-light my-4" (click)="login()" [disabled]="!loginForm.valid">Giriş</button>
+          </div>
+
+      </form>
+    </div>
+  </div>
+</div>

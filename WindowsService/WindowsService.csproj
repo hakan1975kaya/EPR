@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+	  <TargetFramework>net6.0</TargetFramework>
+	  <Nullable>enable</Nullable>
+	  <ImplicitUsings>true</ImplicitUsings>
+	  <RootNamespace></RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
+	  <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
+	  <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
+	  <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.1" />
+	  <PackageReference Include="Topshelf" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Business\Business.csproj" />
+    <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\Entities\Entities.csproj" />
+    <ProjectReference Include="..\SFTP\Sftp.csproj" />
+    <ProjectReference Include="..\Tandem\Tandem.csproj" />
+  </ItemGroup>
+</Project>

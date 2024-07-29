@@ -1,0 +1,213 @@
+<div class="container-fluid" role="main">
+
+  <!--Icon-->
+  <div class="row">
+    <div class="col-md-1 border-0"><i class="fa fa-server fa-2x"></i></div>
+    <div class="col-md-11">
+      <h5>Rol Tanımlama İşlemleri</h5>
+    </div>
+  </div>
+
+  <div class="row">
+    <!--Search Form-->
+    <form [formGroup]="searchForm">
+      <!--card-->
+      <div class="card p-2 border-0 ">
+        <div class="card-body bg-secondary text-white ">
+          <div class="row">
+            <!--filter-->
+            <div class="col-md-10">
+              <div class="form-group">
+                <input type="text" class="form-control" formControlName="filter" name="filter" id="filter"
+                  placeholder="Rol Adı ile arama yap.." required minlength="1">
+                <div class="alert alert-danger"
+                  *ngIf="searchForm.get('filter')?.hasError('required')  && searchForm.get('filter')?.dirty">
+                  Rol Adı girmek zorundasınız</div>
+                <div class="alert alert-danger"
+                  *ngIf=" searchForm.get('filter')?.hasError('minlength')  && searchForm.get('filter')?.dirty">En
+                  az 1 Harf girmek zorundasınız
+                </div>
+              </div>
+            </div>
+
+            <!--Search Button-->
+            <div class="col-md-1">
+              <div class="form-group">
+                <button type="button" class="btn btn-warning text-white" name="search" (click)="search()"
+                  [disabled]="!searchForm.valid" style="cursor: pointer;"
+                  [ngStyle]="{'display':'Role.Search' | operationclaim}">Ara</button>
+              </div>
+            </div>
+
+            <!--Clear Button-->
+            <div class="col-md-1">
+              <div class="form-group">
+                <button type="button" class="btn btn-light" name="clear" (click)="clear()"
+                  style="cursor: pointer;">Temizle</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!--call RoleModal-->
+  <div class="row p-2">
+    <div class="col-md-2">
+      <button type="button" class="btn btn-info text-white" (click)="openRoleModal()" style="cursor: pointer;"
+        [ngStyle]="{'display':'Role.Add' | operationclaim}"> <i class="fa fa-plus"></i> Yeni
+        Rol Ekle </button>
+    </div>
+  </div>
+
+  <!--Table-->
+  <div class="card p-2">
+    <div class="card-body">
+      <div class="table-responsive" id="divSerach">
+        <table class="table align-items-center table-flush" id="tblSearch" name="tblSearch">
+          <thead>
+            <th style="display: none;"><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('id')"
+                style="cursor: pointer;"></i>Id<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('id')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('name')"
+                style="cursor: pointer;"></i>Rol Adı<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('name')" style="cursor: pointer;"></i></th>
+            <th class="col-md-1">İşlemler</th>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let roleSearchResponseModel of roleSearchResponseModels | paginate: {id:'RolePagination',itemsPerPage:itemsPerPage, currentPage:currentPage}">
+              <td style="display: none;">{{roleSearchResponseModel.id}}</td>
+              <td>{{roleSearchResponseModel.name}}</td>
+              <td class="col-md-1">
+                <div class="row">
+                  <i class="fa fa-pencil fa-2x  col-md-6" style="color: steelblue;cursor: pointer;"
+                    (click)="openRoleModal(roleSearchResponseModel.id)"
+                    [ngStyle]="{'display':'Role.Update' | operationclaim}"></i>
+                  <i class="fa fa-trash fa-2x col-md-6" style="color: red;cursor: pointer;"
+                    (click)="openConfirmModal(roleSearchResponseModel.id)"
+                    [ngStyle]="{'display':'Role.Delete' | operationclaim}"></i>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!--pagination-->
+  <div class="row p-2">
+    <div class="col-md-10">
+      <pagination-controls id="rolePagination" (pageChange)="currentPage = $event"></pagination-controls>
+    </div>
+  </div>
+
+  <!--bottoms-->
+  <div class="col-md-1">
+    <div class="row">
+      <i class="fa fa-file-excel-o fa-2x col-md-6" style="color:green;cursor: pointer;" (click)="exportToExcel()"
+        [ngStyle]="{'display':'Role.GetList' | operationclaim}"></i>
+      <i class="fa fa-file-pdf-o fa-2x col-md-6" style="color:red;cursor: pointer;" (click)="exportToPdf()"
+        [ngStyle]="{'display':'Role.GetList' | operationclaim}"></i>
+    </div>
+  </div>
+</div>
+<div class="col-md-1"></div>
+
+<!--Role modal-->
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayRoleModal}">
+  <div class="modal-dialog modal-lg" role="dialog">
+    <div class="modal-content bg-secondary text-white">
+      <div class="modal-header">
+        <h4 class="modal-title">Rol Ekleme & Düzenleme</h4>
+        <button type="button" class="btn btn-light" aria-label="Close" (click)="onRoleModalCloseHandled()"
+          style="cursor: pointer;">
+          <i class="fa fa-times-circle fa-2x" aria-hidden="true"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card-body bg-secondary text-white">
+            <form [formGroup]="roleForm">
+
+              <!--id-->
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-md-12">
+                    <input type="hidden" class="form-control" formControlName="id" id="id" name="id">
+                  </div>
+                </div>
+              </div>
+
+              <!--name-->
+              <div class="form-group pt-4">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label for="name" class="form-label">Rol Adı :</label>
+                  </div>
+                  <div class="col-md-8">
+                    <input type="text" class="form-control" formControlName="name" id="name" name="name"
+                      placeholder="Rol Adını Yazınız." required minlength="3">
+                    <div class="alert alert-danger"
+                      *ngIf="roleForm.get('name')?.hasError('required') && roleForm.get('name')?.dirty">
+                      Rol Adı  Adı zorunlu!</div>
+                    <div class="alert alert-danger"
+                      *ngIf="roleForm.get('name')?.hasError('minlength') && roleForm.get('name')?.dirty">
+                      En
+                      Az 3 Harf zorunlu!</div>
+                  </div>
+                </div>
+              </div>
+              
+            </form>
+          </div>
+        </div>
+      </div>
+      <!--modal footer-->
+      <div class="modal-footer bg-secondary text-white justify-content-center  pt-4">
+        <button type="button" class="btn btn-primary" (click)="save()" [disabled]="!roleForm.valid"
+          style="cursor: pointer;" [ngStyle]="{'display':'Role.Add' | operationclaim}"
+          [ngStyle]="{'display':'Role.Update' | operationclaim}">Kaydet</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayConfirmModal}">
+  <div class="modal-dialog" role="dialog">
+    <div class="modal-content bg-secondary text-white">
+      <div class="modal-header">
+        <h4 class="modal-title">Rol Silme Onay</h4>
+        <button type="button" class="btn btn-light" aria-label="Close" (click)="onConfirmModalCloseHandled()"> <i
+            class="fa fa-times-circle fa-2x" aria-hidden="true" style="cursor: pointer;"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card-body bg-secondary text-white">
+            <div class="row">
+              <div class="col-md-12">
+                <h5>
+                  Silmek İstediğinizden Emin misiniz?
+                </h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer bg-secondary text-white justify-content-center">
+        <div class="row">
+          <div class="col-md-6">
+            <button type="button" class="btn btn-success" (click)="deleteFromConfirm()" style="cursor: pointer;"
+              [ngStyle]="{'display':'Role.Delete' | operationclaim}">Evet</button>
+          </div>
+          <div class="col-md-6">
+            <button type="button" class="btn btn-danger" (click)="onConfirmModalCloseHandled()"
+              style="cursor: pointer;">Hayır</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

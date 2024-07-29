@@ -1,0 +1,164 @@
+<div class="container-fluid" role="main">
+
+  <!--Icon-->
+  <div class="row">
+    <div class="col-md-1 border-0"><i class="fa fa-user-secret  fa-2x" aria-hidden="true"></i></div>
+    <div class="col-md-11">
+      <h5>Rol Yetkilendirme İşlemleri</h5>
+    </div>
+  </div>
+
+  <div class="row">
+    <!--Search Form-->
+    <form [formGroup]="searchForm" (ngSubmit)="search()">
+      <!--card-->
+      <div class="card p-2 border-0 ">
+        <div class="card-body bg-secondary text-white ">
+          <div class="row">
+            <!--filter-->
+            <div class="col-md-10">
+              <div class="form-group">
+                <input type="text" class="form-control" formControlName="filter" name="filter" id="filter"
+                  placeholder="Role Adı ile arama yap.. " required minlength="1"
+                  (keydown.enter)="search()">
+                <div class="alert alert-danger"
+                  *ngIf="searchForm.get('filter')?.hasError('required')  && searchForm.get('filter')?.dirty">
+                  Role Adı girmek zorundasınız</div>
+                <div class="alert alert-danger"
+                  *ngIf=" searchForm.get('filter')?.hasError('minlength')  && searchForm.get('filter')?.dirty">En
+                  az 1 Harf girmek zorundasınız
+                </div>
+              </div>
+            </div>
+
+            <!--Search Button-->
+            <div class="col-md-1">
+              <div class="form-group">
+                <button type="button" class="btn btn-warning text-white" name="search" (click)="search()"
+                  [disabled]="!searchForm.valid" style="cursor: pointer;"
+                  [ngStyle]="{'display':'Role.Search' | operationclaim}">Ara</button>
+              </div>
+            </div>
+
+            <!--Clear Button-->
+            <div class="col-md-1">
+              <div class="form-group">
+                <button type="button" class="btn btn-light" name="clear" (click)="clear()"
+                  style="cursor: pointer;">Temizle</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!--Table-->
+  <div class="card p-2">
+    <div class="card-body">
+      <div class="table-responsive" id="divSerach">
+        <table class="table align-items-center table-flush" id="tblSearch" name="tblSearch">
+          <thead>
+            <th style="display: none;"><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('id')" style="cursor: pointer;"></i>Id<i class="fa fa-arrow-circle-up" aria-hidden="true" (click)="orderAsc('id')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('name')" style="cursor: pointer;"></i>Rol Adı<i class="fa fa-arrow-circle-up" aria-hidden="true" (click)="orderAsc('name')" style="cursor: pointer;"></i></th>
+            <th class="col-md-1">İşlemler</th>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let roleSearchResponseModel of roleSearchResponseModels | paginate: {id:'rolePagination',itemsPerPage:itemsPerPage, currentPage:currentPage}">
+              <td style="display: none;">{{roleSearchResponseModel.id}}</td>
+              <td>{{roleSearchResponseModel.name}}</td>
+              <td class="col-md-1">
+                <div class="row">
+                  <i class="fa fa-pencil fa-2x  col-md-6" style="color: steelblue;cursor: pointer;"
+                    (click)="openRoleOperationClaimModal(roleSearchResponseModel.id)"
+                    [ngStyle]="{'display':'RoleOperationClaim.GetList' | operationclaim}"></i>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!--pagination-->
+  <div class="row p-2">
+    <div class="col-md-10">
+      <pagination-controls id="rolePagination" (pageChange)="currentPage = $event"></pagination-controls>
+    </div>
+  </div>
+
+  <!--bottoms-->
+  <div class="col-md-1">
+    <div class="row">
+      <i class="fa fa-file-excel-o fa-2x col-md-6" style="color:green;cursor: pointer;" (click)="exportToExcel()"
+        [ngStyle]="{'display':'Role.GetList' | operationclaim}"></i>
+      <i class="fa fa-file-pdf-o fa-2x col-md-6" style="color:red;cursor: pointer;" (click)="exportToPdf()"
+        [ngStyle]="{'display':'Role.GetList' | operationclaim}"></i>
+    </div>
+  </div>
+  <div class="col-md-1"></div>
+</div>
+
+<!--RoleOperationClaim modal-->
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayRoleOperationClaimModal}">
+  <div class="modal-dialog" role="dialog">
+    <div class="modal-content bg-secondary text-white">
+      <div class="modal-header">
+        <h4 class="modal-title">Rol Yetki Ekleme & Düzenleme</h4>
+        <button type="button" class="btn btn-light" aria-label="Close" (click)="onRoleOperationClaimModalCloseHandled()"
+          style="cursor: pointer;">
+          <i class="fa fa-times-circle fa-2x" aria-hidden="true"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card-body bg-secondary text-white">
+            <form [formGroup]="roleOperationClaimForm">
+
+              <!--RoleOperationClaim-->
+              <div class="card text-black bg-white" style="height: 30rem;">
+                <div class="card-header">Yetkilendirme İşlemleri</div>
+                <div class="overflow-auto">
+                  <div class="card-body">
+                    <ul *ngFor=" let operationClaimParentListResponseModel of operationClaimParentListResponseModels">
+                      <li value="operationClaimParentListResponseModel.id"><input type="checkbox"
+                          (change)="setParentOperationClaimCheck(operationClaimParentListResponseModel.id,$event)"
+                          [checked]="operationClaimParentListResponseModel.isChecked">
+                        {{operationClaimParentListResponseModel.name}} </li>
+                      <ul *ngFor="let operationClaimChildListResponseModel of operationClaimChildListResponseModels">
+                        <li
+                          *ngIf="operationClaimParentListResponseModel.id==operationClaimChildListResponseModel.linkedOperationClaimId"
+                          value="operationClaimChildListResponseModel.id"><input type="checkbox"
+                            (change)="setClientOperationClaimCheck(operationClaimChildListResponseModel.id,$event)"
+                            [checked]="operationClaimChildListResponseModel.isChecked">
+                          {{operationClaimChildListResponseModel.name}} </li>
+                      </ul>
+                    </ul>
+
+                  </div>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!--modal footer-->
+      <div class="modal-footer bg-secondary text-white justify-content-center">
+        <div>
+          <button type="button" class="btn btn-warning" (click)="roleOperationClaimCancel()"
+            style="cursor: pointer;">iptal</button>
+        </div>
+        <div>
+          <button type="button" class="btn btn-primary" (click)="roleOperationClaimSave()"
+            [disabled]="!roleOperationClaimForm.valid" style="cursor: pointer;"
+            [ngStyle]="{'display':'RoleOperationClaim.Add' | operationclaim}"
+            [ngStyle]="{'display':'RoleOperationClaim.Update' | operationclaim}">Kaydet</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

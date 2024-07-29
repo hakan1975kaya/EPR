@@ -1,0 +1,82 @@
+<div class="container-fluid" role="main">
+  <!--Logo items-->
+  <div class="row p-4">
+    <!--Logo-->
+    <div class="col-md-2">
+      <img class="img-fluid img-thumbnail border-0" style="width: auto; height: 50px; cursor: pointer;"
+        src="../assets/img/brand/ptt.png" alt="Logo">
+    </div>
+    <!--Extra-->
+    <div class="col-md-7">
+    </div>
+    <!--user-->
+    <div class="col-md-3 " *ngIf="isLogin">
+      <div class="card border-0">
+        <div class="row">
+          <div class="col-md-2 ">
+            <i class="fa fa-user fa-3x" style="cursor: pointer;" aria-hidden="true"  [routerLink]="['/user-profile']"></i>
+            <i class="fa fa fa-key" style="cursor: pointer;" aria-hidden="true"  [routerLink]="['/password-change']"></i>
+          </div>
+          <div class="col-md-8">
+            <div class="row fw-bold">{{userGetByRegistrationNumberResponseModel.registrationNumber}}</div>
+            <div class="row fw-bold">{{userGetByRegistrationNumberResponseModel.firstName}}
+              {{userGetByRegistrationNumberResponseModel.lastName}}</div>
+          </div>
+          <div class="col-md-2">
+            <i class="fa fa-sign-out fa-3x" style="cursor: pointer;" aria-hidden="true" (click)="logOut()"></i>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <!--Body-->
+  <div class="row p-4">
+    <div class="col-md-2">
+      <h3 ngbTooltip="External Paymet Request"> EPR </h3>
+      <ul *ngIf="isLogin" class="navbar-nav">
+        <ul class="list-group" 
+          *ngFor=" let  menuParentListGetByUserIdResponseModel of  menuParentListGetByUserIdResponseModels">
+          <li *ngIf="menuParentListGetByUserIdResponseModel.path!='login'" class="list-group-item" value=" menuParentListGetByUserIdResponseModel.id"   [ngStyle]="{'background-color':menuParentListGetByUserIdResponseModel.id == selectedMenuId ? '#54B4D3' : '#757575' }" >
+            <a  class="link-light"  [routerLink]="menuParentListGetByUserIdResponseModel.path" (click)="setMenuId(menuParentListGetByUserIdResponseModel.id)"><span>{{menuParentListGetByUserIdResponseModel.description}}</span></a>
+          </li>
+          <ul class="list-group"
+            *ngFor="let  menuChildListGetByUserIdResponseModel of menuChildListGetByUserIdResponseModels ">
+            <li class="list-group-item "
+              *ngIf=" menuParentListGetByUserIdResponseModel.id== menuChildListGetByUserIdResponseModel.linkedMenuId"
+              value=" menuChildListGetByUserIdResponseModel.id"> <a routerLinkActive="active"
+                [routerLink]=" menuChildListGetByUserIdResponseModel.path">{{
+                menuChildListGetByUserIdResponseModel.description}}</a>
+              <ul class="list-group"
+                *ngFor="let  menuChildListGetByUserIdResponseModelChild of menuChildListGetByUserIdResponseModels ">
+                <li class="list-group-item"
+                  *ngIf=" menuChildListGetByUserIdResponseModelChild.id== menuChildListGetByUserIdResponseModel.linkedMenuId"
+                  value=" menuChildListGetByUserIdResponseModelChild.id">{{
+                  menuChildListGetByUserIdResponseModelChild.name}}</li>
+              </ul>
+            </li>
+          </ul>
+        </ul>
+      </ul>
+    </div>
+    <div class="col-md-10">
+      <router-outlet  (activate)="activateApp()"></router-outlet>
+    </div>
+  </div>
+  <!-- Footer -->
+  <footer class="py-5">
+    <div class="row p-4">
+      <div class="col-xl-2">
+        <div class="copyright text-center text-xl-left text-muted">
+          © 2023 PTT <a href="d" class="font-weight-bold ml-1" target="_blank"></a>
+        </div>
+      </div>
+      <div class="col-xl-10">
+        <ul class="nav nav-footer justify-content-center justify-content-xl-end">
+          <li class="nav-item">
+          </li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+</div>

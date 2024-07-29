@@ -1,0 +1,102 @@
+<div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
+  style="min-height: 500px; background-image: url(../assets/img/brand/ptt.png); background-size:cover; background-position: center top;background-color:gray;">
+  <!-- Mask -->
+  <span class="mask bg-gradient-info opacity-8"></span>
+  <!-- Header container -->
+  <div class="container-fluid d-flex align-items-center">
+    <div class="row">
+      <div class="col-lg-7 col-md-10">
+        <h1 class="display-2 text-white">Merhaba {{userGetByRegistrationNumberResponseModel.firstName}} </h1>
+        <p class="text-white mt-0 mb-5">Bu senin profil sayfan. Çalışmanızda kaydettiğiniz ilerlemeyi görebilir ve
+          projelerinizi veya atanan görevleri yönetebilirsiniz.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid pt-1">
+  <div class="row">
+    <div class="col-xl-4 order-xl-2 mb-5 mb-xl-0">
+      <div class="card card-profile shadow   bg-secondary text-white">
+        <div class="row justify-content-center">
+          <div class="col-lg-3 order-lg-2">
+            <div class="card-profile-image">
+              <a href="javascript:void(0)">
+                <i class="fa fa-user-circle fa-5x"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4  ">
+          <div class="d-flex justify-content-between">
+          </div>
+        </div>
+        <div class="card-body pt-0 pt-md-4">
+          <div class="row">
+            <div class="col">
+              <div class="card-profile-stats d-flex justify-content-center mt-md-5">
+
+              </div>
+            </div>
+          </div>
+          <div class="text-center">
+            <h3>
+              {{userGetByRegistrationNumberResponseModel.registrationNumber}}
+            </h3>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-8 order-xl-1">
+      <div class="card bg-secondary shadow  text-white">
+        <div class="card-header bg-white border-0">
+          <div class="row align-items-center">
+            <div class="col-8">
+              <h3 class="mb-0">Hesabım</h3>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <form>
+            <h6 class="heading-small mb-4">Kullanıcı Bilgisi</h6>
+            <div class="pl-lg-4">
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-username">Kullanıcı Adı</label>
+                    <input type="text" id="input-username" class="form-control form-control-alternative"
+                      placeholder="Username" value="{{userGetByRegistrationNumberResponseModel.firstName}} {{userGetByRegistrationNumberResponseModel.lastName}}" readonly>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-email">Sicil</label>
+                    <input type="email" id="input-email" class="form-control form-control-alternative"
+                      placeholder="{{userGetByRegistrationNumberResponseModel.registrationNumber}}" readonly>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-first-name">Ad</label>
+                    <input type="text" id="input-first-name" class="form-control form-control-alternative"
+                      placeholder="Ad" value="{{userGetByRegistrationNumberResponseModel.firstName}}" readonly>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-last-name">Soyad</label>
+                    <input type="text" id="input-last-name" class="form-control form-control-alternative"
+                      placeholder="Last name" value="{{userGetByRegistrationNumberResponseModel.lastName}}" readonly>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr class="my-4" />
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

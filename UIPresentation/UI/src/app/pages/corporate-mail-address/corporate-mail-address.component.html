@@ -1,0 +1,276 @@
+<div class="container-fluid" role="main">
+
+  <!--Icon-->
+  <div class="row">
+    <div class="col-md-1 border-0"><i class="fa fa-envelope-o fa-2x"></i></div>
+    <div class="col-md-11">
+      <h5>Kurum Mail Adresi Tanımlama İşlemleri</h5>
+    </div>
+  </div>
+
+  <div class="row">
+    <!--Search Form-->
+    <form [formGroup]="searchForm">
+      <!--card-->
+      <div class="card p-2 border-0 ">
+        <div class="card-body bg-secondary text-white ">
+          <div class="row">
+            <!--filter-->
+            <div class="col-md-10">
+              <div class="form-group">
+                <input type="text" class="form-control" formControlName="filter" name="filter" id="filter"
+                  placeholder="Kurum Kodu, Kurum Adı, Mail Adresi ile arama yap.." required minlength="1">
+                <div class="alert alert-danger"
+                  *ngIf="searchForm.get('filter')?.hasError('required')  && searchForm.get('filter')?.dirty">
+                  Kurum Kodu, Kurum Adı, Mail Adresi girmek zorundasınız</div>
+                <div class="alert alert-danger"
+                  *ngIf=" searchForm.get('filter')?.hasError('minlength')  && searchForm.get('filter')?.dirty">En
+                  az 1 Harf girmek zorundasınız
+                </div>
+              </div>
+            </div>
+
+            <!--Search Button-->
+            <div class="col-md-1">
+              <div class="form-group">
+                <button type="button" class="btn btn-warning text-white" name="search" (click)="search()"
+                  [disabled]="!searchForm.valid" style="cursor: pointer;"
+                  [ngStyle]="{'display':'CorporateMailAddress.Search' | operationclaim}">Ara</button>
+              </div>
+            </div>
+
+            <!--Clear Button-->
+            <div class="col-md-1">
+              <div class="form-group">
+                <button type="button" class="btn btn-light" name="clear" (click)="clear()"
+                  style="cursor: pointer;">Temizle</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!--call CorporateMailAddressModal-->
+  <div class="row p-2">
+    <div class="col-md-2">
+      <button type="button" class="btn btn-info text-white" (click)="openCorporateMailAddressModal()"
+        style="cursor: pointer;" [ngStyle]="{'display':'CorporateMailAddress.Add' | operationclaim}"> <i
+          class="fa fa-plus"></i> Yeni Kurum Mail Ekle </button>
+    </div>
+  </div>
+
+
+  <!--Table-->
+  <div class="card p-2">
+    <div class="card-body">
+      <div class="table-responsive" id="divSerach">
+        <table class="table align-items-center table-flush" id="tblSearch" name="tblSearch">
+          <thead>
+            <th style="display: none;"><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('id')"
+                style="cursor: pointer;"></i>Id<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('id')" style="cursor: pointer;"></i></th>
+            <th style="display: none;"><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('corporateId')"
+                style="cursor: pointer;"></i>Kurum Id<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('corporateId')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('corporateCode')"
+                style="cursor: pointer;"></i>Kurum Kodu<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('corporateCode')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('corporateName')"
+                style="cursor: pointer;"></i>Kurum Adı<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('corporateName')" style="cursor: pointer;"></i></th>
+            <th style="display: none;"><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('mailAddressId')"
+                style="cursor: pointer;"></i>Mail Adresi Id<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('mailAddressId')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('address')"
+                style="cursor: pointer;"></i>Mail Adresi<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('address')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('isCC')"
+                style="cursor: pointer;"></i>CC Mi<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('isCC')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('isPtt')"
+                style="cursor: pointer;"></i>Ptt Mi<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('isPtt')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('optime')"
+                style="cursor: pointer;"></i>Tarih<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('optime')" style="cursor: pointer;"></i></th>
+            <th class="col-md-1">İşlemler</th>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let corporateMailAddressSearchResponseModel of corporateMailAddressSearchResponseModels | paginate: {id:'corporateMailAddressPagination',itemsPerPage:itemsPerPage, currentPage:currentPage}">
+              <td style="display: none;">{{corporateMailAddressSearchResponseModel.id}}</td>
+              <td style="display: none;">{{corporateMailAddressSearchResponseModel.corporateId}}</td>
+              <td>{{corporateMailAddressSearchResponseModel.corporateCode}}</td>
+              <td>{{corporateMailAddressSearchResponseModel.corporateName}}</td>
+              <td style="display: none;">{{corporateMailAddressSearchResponseModel.mailAddressId}}</td>
+              <td>{{corporateMailAddressSearchResponseModel.address}}</td>
+              <td>{{corporateMailAddressSearchResponseModel.isCC | translate}}</td>
+              <td>{{corporateMailAddressSearchResponseModel.isPtt | translate}}</td>
+              <td>{{corporateMailAddressSearchResponseModel.optime | date:'dd.MM.yyyy hh:mm:ss'}}</td>
+              <td class="col-md-1">
+                <div class="row">
+                  <i class="fa fa-pencil fa-2x  col-md-6" style="color: steelblue;cursor: pointer;"
+                    (click)="openCorporateMailAddressModal(corporateMailAddressSearchResponseModel.id)"
+                    [ngStyle]="{'display':'CorporateMailAddress.Update' | operationclaim}"></i>
+                  <i class="fa fa-trash fa-2x col-md-6" style="color: red;cursor: pointer;"
+                    (click)="openConfirmModal(corporateMailAddressSearchResponseModel.id)"
+                    [ngStyle]="{'display':'CorporateMailAddress.Delete' | operationclaim}"></i>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!--pagination-->
+  <div class="row p-2">
+    <div class="col-md-10">
+      <pagination-controls id="corporateMailAddressPagination"
+        (pageChange)="currentPage = $event"></pagination-controls>
+    </div>
+  </div>
+
+  <!--bottoms-->
+  <div class="col-md-1">
+    <div class="row">
+      <i class="fa fa-file-excel-o fa-2x col-md-6" style="color:green;cursor: pointer;" (click)="exportToExcel()"
+        [ngStyle]="{'display':'CorporateMailAddress.GetList' | operationclaim}"></i>
+      <i class="fa fa-file-pdf-o fa-2x col-md-6" style="color:red;cursor: pointer;" (click)="exportToPdf()"
+        [ngStyle]="{'display':'CorporateMailAddress.GetList' | operationclaim}"></i>
+    </div>
+  </div>
+</div>
+<div class="col-md-1"></div>
+
+<!--CorporateMailAddress modal-->
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayCorporateMailAddressModal}">
+  <div class="modal-dialog modal-lg" role="dialog">
+    <div class="modal-content bg-secondary text-white">
+      <div class="modal-header">
+        <h4 class="modal-title">Kurum Mail Adresi Ekleme & Düzenleme</h4>
+        <button type="button" class="btn btn-light" aria-label="Close"
+          (click)="onCorporateMailAddressModalCloseHandled()" style="cursor: pointer;">
+          <i class="fa fa-times-circle fa-2x" aria-hidden="true"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card-body bg-secondary text-white">
+            <form [formGroup]="corporateMailAddressForm">
+
+              <!--id-->
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-md-12">
+                    <input type="hidden" class="form-control" formControlName="id" id="id" name="id">
+                  </div>
+                </div>
+              </div>
+
+              <!--corporateId-->
+              <div class="form-group pt-4">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label for="corporateId" class="col-form-label">Kurum :</label>
+                  </div>
+                  <div class="col-md-8">
+                    <select class="form-select" [(ngModel)]="corporateIdDefault" formControlName="corporateId"
+                      id="corporateId" name="corporateId" required min="0" style="cursor: pointer;">
+                      <option value=-1 selected disabled>Kurum Seçiniz</option>
+                      <option *ngFor="let corporateGetListResponseModel of corporateGetListResponseModels"
+                        value={{corporateGetListResponseModel.id}}>
+                        {{corporateGetListResponseModel.corporateCode}}-{{corporateGetListResponseModel.corporateName}}
+                      </option>
+                    </select>
+                    <div class="alert alert-danger"
+                      *ngIf="corporateMailAddressForm.get('corporateId')?.hasError('required') && corporateMailAddressForm.get('corporateId')?.dirty">
+                      Kurum Zorunlu!</div>
+                    <div class="alert alert-danger"
+                      *ngIf="corporateMailAddressForm.get('corporateId')?.hasError('min') && corporateMailAddressForm.get('corporateId')?.dirty">
+                      En az 0 olmak zorunda
+                      zorunlu!</div>
+                  </div>
+                </div>
+              </div>
+
+              <!--mailddressId-->
+              <div class="form-group pt-4">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label for="mailAddressId" class="col-form-label">Mail Adres :</label>
+                  </div>
+                  <div class="col-md-8">
+                    <select class="form-select" [(ngModel)]="mailAddressIdDefault" formControlName="mailAddressId"
+                      id="mailAddressId" name="mailAddressId" required min="0" style="cursor: pointer;">
+                      <option value=-1 selected disabled>Mail Adres Seçiniz</option>
+                      <option *ngFor="let mailAddressGetListNotPttResposeModel of mailAddressGetListNotPttResposeModels"
+                        value={{mailAddressGetListNotPttResposeModel.id}}>
+                        {{mailAddressGetListNotPttResposeModel.address}}
+                      </option>
+                    </select>
+                    <div class="alert alert-danger"
+                      *ngIf="corporateMailAddressForm.get('mailAddressId')?.hasError('required') && corporateMailAddressForm.get('mailAddressId')?.dirty">
+                      Mail Adres Zorunlu!</div>
+                    <div class="alert alert-danger"
+                      *ngIf="corporateMailAddressForm.get('mailAddressId')?.hasError('min') && corporateMailAddressForm.get('mailAddressId')?.dirty">
+                      En az 0 olmak zorunda
+                      zorunlu!</div>
+                  </div>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+      <!--modal footer-->
+      <div class="modal-footer bg-secondary text-white justify-content-center  pt-4">
+        <button type="button" class="btn btn-primary" (click)="save()" [disabled]="!corporateMailAddressForm.valid"
+          style="cursor: pointer;" [ngStyle]="{'display':'CorporateMailAddress.Add' | operationclaim}"
+          [ngStyle]="{'display':'CorporateMailAddress.Update' | operationclaim}">Kaydet</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayConfirmModal}">
+  <div class="modal-dialog" role="dialog">
+    <div class="modal-content bg-secondary text-white">
+      <div class="modal-header">
+        <h4 class="modal-title">Kurum Mail Adresi Silme Onay</h4>
+        <button type="button" class="btn btn-light" aria-label="Close" (click)="onConfirmModalCloseHandled()"> <i
+            class="fa fa-times-circle fa-2x" aria-hidden="true" style="cursor: pointer;"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card-body bg-secondary text-white">
+            <div class="row">
+              <div class="col-md-12">
+                <h5>
+                  Silmek İstediğinizden Emin misiniz?
+                </h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer bg-secondary text-white justify-content-center">
+        <div class="row">
+          <div class="col-md-6">
+            <button type="button" class="btn btn-success" (click)="deleteFromConfirm()" style="cursor: pointer;"
+              [ngStyle]="{'display':'CorporateMailAddress.Delete' | operationclaim}">Evet</button>
+          </div>
+          <div class="col-md-6">
+            <button type="button" class="btn btn-danger" (click)="onConfirmModalCloseHandled()"
+              style="cursor: pointer;">Hayır</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

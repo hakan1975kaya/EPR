@@ -1,0 +1,270 @@
+<div class="container-fluid" role="main">
+
+  <!--Icon-->
+  <div class="row">
+    <div class="col-md-1 border-0"><i class="fa fa-globe fa-2x"></i></div>
+    <div class="col-md-11">
+      <h5>Dosya Ödeme Onay İşlemleri</h5>
+    </div>
+  </div>
+
+  <div class="row">
+    <!--Search Form-->
+    <form [formGroup]="searchForm">
+      <!--card-->
+      <div class="card p-2 border-0 ">
+        <div class="card-body bg-secondary text-white ">
+          <div class="row">
+            <!--filter-->
+            <div class="col-md-10">
+              <div class="form-group">
+                <input type="text" class="form-control" formControlName="filter" name="filter" id="filter"
+                  placeholder="Kurum Adı, Kurum Kodu, Ödeme Talebi Numarası ile arama yap.." required minlength="1">
+                <div class="alert alert-danger"
+                  *ngIf="searchForm.get('filter')?.hasError('required')  && searchForm.get('filter')?.dirty">
+                  Kurum Adı, Kurum Kodu, Ödeme Talebi Numarası girmek zorundasınız</div>
+                <div class="alert alert-danger"
+                  *ngIf=" searchForm.get('filter')?.hasError('minlength')  && searchForm.get('filter')?.dirty">En
+                  az 1 Harf girmek zorundasınız
+                </div>
+              </div>
+            </div>
+
+            <!--Search Button-->
+            <div class="col-md-1">
+              <div class="form-group">
+                <button type="button" class="btn btn-warning text-white" name="search" (click)="search()"
+                  [disabled]="!searchForm.valid" style="cursor: pointer;"
+                  [ngStyle]="{'display':'PaymentRequestSummary.Search' | operationclaim}">Ara</button>
+              </div>
+            </div>
+
+            <!--Clear Button-->
+            <div class="col-md-1">
+              <div class="form-group">
+                <button type="button" class="btn btn-light" name="clear" (click)="clear()"
+                  style="cursor: pointer;">Temizle</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!--Table-->
+  <div class="card p-2">
+    <div class="card-body">
+      <div class="table-responsive" id="divSerach">
+        <table class="table align-items-center table-flush" id="tblSearch" name="tblSearch">
+          <thead>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('requestNumber')"
+                style="cursor: pointer;"></i>Talep<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('requestNumber')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('corporateCode')"
+                style="cursor: pointer;"></i>Kurum<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('corporateCode')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('status')"
+                style="cursor: pointer;"></i>Durum<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('status')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('uploadDate')"
+                style="cursor: pointer;"></i>Yükleme<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('uploadDate')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('quantity')"
+                style="cursor: pointer;"></i>Adet<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('quantity')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('amount')"
+                style="cursor: pointer;"></i>Toplam<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('amount')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('systemEnteredDate')"
+                style="cursor: pointer;"></i>Tarih<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('systemEnteredDate')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true" (click)="orderDesc('systemEnteredTime')"
+                style="cursor: pointer;"></i>Saat<i class="fa fa-arrow-circle-up" aria-hidden="true"
+                (click)="orderAsc('systemEnteredTime')" style="cursor: pointer;"></i></th>
+            <th><i class="fa fa-arrow-circle-down" aria-hidden="true"
+                (click)="orderDesc('systemEnteredRegistrationNumber')" style="cursor: pointer;"></i>Sicil<i
+                class="fa fa-arrow-circle-up" aria-hidden="true" (click)="orderAsc('systemEnteredRegistrationNumber')"
+                style="cursor: pointer;"></i></th>
+            <th class="col-md-1">İşlemler</th>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let paymentRequestSummarySearchResponseModel of paymentRequestSummarySearchResponseModels | paginate: {id:'paymentRequestSummaryPagination',itemsPerPage:itemsPerPagePaymentRequestSummary, currentPage:currentPagePaymentRequestSummary}">
+              <td>{{paymentRequestSummarySearchResponseModel.requestNumber}}</td>
+              <td>
+                {{paymentRequestSummarySearchResponseModel.corporateCode}}-{{paymentRequestSummarySearchResponseModel.corporateName}}
+              </td>
+              <td>{{statusEnum[ paymentRequestSummarySearchResponseModel.status] | translate}}</td>
+              <td>{{paymentRequestSummarySearchResponseModel.uploadDate | date: 'dd-MM-yyyy hh:mm:ss'}}</td>
+              <td>{{paymentRequestSummarySearchResponseModel.quantity}}</td>
+              <td>{{paymentRequestSummarySearchResponseModel.amount | number: '2.0-2'}}</td>
+              <td>{{paymentRequestSummarySearchResponseModel.systemEnteredDate | date: 'dd-MM-yyyy'}}</td>
+              <td>{{paymentRequestSummarySearchResponseModel.systemEnteredTime }}</td>
+              <td>{{paymentRequestSummarySearchResponseModel.systemEnteredRegistrationNumber}}</td>
+              <td class="col-md-1">
+                <div class="row">
+                  <i *ngIf="paymentRequestSummarySearchResponseModel.status==statusEnum.SummaryWaitingForApproval"
+                    class="fa fa-thumbs-up fa-2x  col-md-6" style="cursor: pointer;"
+                    (click)="openPaymentRequestSummaryModal(paymentRequestSummarySearchResponseModel.corporateCode)"
+                    [ngStyle]="{'display':'PaymentRequestSummary.Add' | operationclaim}"></i>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!--pagination-->
+  <div class="row p-2">
+    <div class="col-md-10">
+      <pagination-controls id="paymentRequestSummaryPagination"
+        (pageChange)="currentPagePaymentRequestSummary = $event"></pagination-controls>
+    </div>
+  </div>
+
+  <!--bottoms-->
+  <div class="col-md-1">
+    <div class="row">
+      <i class="fa fa-file-excel-o fa-2x col-md-6" style="color:green;cursor: pointer;" (click)="exportToExcel()"
+        [ngStyle]="{'display':'PaymentRequestSummary.GetList' | operationclaim}"></i>
+      <i class="fa fa-file-pdf-o fa-2x col-md-6" style="color:red;cursor: pointer;" (click)="exportToPdf()"
+        [ngStyle]="{'display':'PaymentRequestSummary.GetList' | operationclaim}"></i>
+    </div>
+  </div>
+</div>
+<div class="col-md-1"></div>
+
+<!--paymentRequestSummary modal-->
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displaypaymentRequestSummaryModal}">
+  <div class="modal-dialog modal-xl" role="dialog">
+    <div class="modal-content bg-secondary text-white">
+      <div class="modal-header">
+        <h4 class="modal-title">Dosya Ödeme Onay İşlemleri</h4>
+        <button type="button" class="btn btn-light" aria-label="Close"
+          (click)="onPaymentRequestSummaryModalCloseHandled()" style="cursor: pointer;">
+          <i class="fa fa-times-circle fa-2x" aria-hidden="true"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card-body bg-secondary text-white">
+            <form [formGroup]="paymentRequestSummaryForm">
+              <!--Table-->
+              <div class="form-group pt-4">
+                <div class="row">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="table-responsive" id="divTandem">
+                        <table class="table align-items-center table-flush" id="tblSearch" name="tblTandem"
+                          style="height:200px;">
+                          <thead>
+                            <tr class="border-bottom-0">
+                              <th>Seç</th>
+                              <th>Talep</th>
+                              <th>Kurum</th>
+                              <th>Durum</th>
+                              <th>Yükleme</th>
+                              <th>Adet</th>
+                              <th>Toplam</th>
+                              <th>Sicil</th>
+                              <th>Giriş Tarihi</th>
+                              <th>Giriş Zamanı</th>
+                              <th>Giriş Sicil</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr class="border-bottom-0"
+                              *ngFor="let summaryExternal of tandemPaymentInquiryResponseExternalModel.summaryExternals | paginate: {id:'tandemPagination',itemsPerPage:itemsPerPageTandem, currentPage:currentPageTandem}">
+                              <td> <input type="checkbox" (change)="setTandemUpdate(summaryExternal,$event)"
+                                  [checked]="summaryExternal.isChecked"></td>
+                              <td>{{summaryExternal.requestNumber}}</td>
+                              <td>{{summaryExternal.corporateCode}}</td>
+                              <td>{{summaryExternal.status | translate}}</td>
+                              <td>{{summaryExternal.uploadDate | date: 'dd-MM-yyyy'}}</td>
+                              <td>{{summaryExternal.quantity}}</td>
+                              <td>{{summaryExternal.amount | number: '2.0-2'}}</td>
+                              <td>{{summaryExternal.registrationNumber}}</td>
+                              <td>{{summaryExternal.systemEnteredDate | date: 'dd-MM-yyyy'}}</td>
+                              <td>{{summaryExternal.systemEnteredTime}}</td>
+                              <td>{{summaryExternal.systemEnteredRegistrationNumber}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!--pagination-->
+              <div class="row p-4">
+                <div class="col-md-10">
+                  <pagination-controls id="tandemPagination"
+                    (pageChange)="currentPageTandem = $event"></pagination-controls>
+                </div>
+              </div>
+
+              <!--  fileId-->
+              <div *ngIf="selectedCorporate.id>0" class="form-group pt-2">
+                <div class="row">
+                  <div class="col-md-1">
+                    <label for="fileId" class="col-form-label">Dosya :</label>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="text-center">
+                      <input type="file" multiple class="form-control text-danger" formcontrolname="fileId" id="fileId"
+                        name="fileId" (change)="onFileSelect($event)" style="cursor: pointer;" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!--Table-->
+              <div class="form-group pt-4">
+                <div class="row">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="table-responsive" id="divFile">
+                        <table class="table align-items-center table-flush" id="tblFile" name="tblFile"
+                          style="height:100px;">
+                          <thead>
+                            <tr class="border-bottom-0">
+                              <th>Seçilen Dosya Adı</th>
+                              <th>Hcp Dosya Adı</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr class="border-bottom-0" *ngFor=" let hcpFileRequestModel of hcpFileRequestModels">
+                              <td>{{hcpFileRequestModel.explanation}}</td>
+                              <td>{{hcpFileRequestModel.hcpId}}.{{hcpFileRequestModel.extension}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!--modal footer-->
+      <div class="modal-footer bg-secondary text-white justify-content-center  pt-4">
+        <button type="button" class="btn btn-success" (click)="tandemUpdate(statusEnum.SummaryApproved)"
+          [disabled]="selectedSummaryExternals.length<=0 ||  !paymentRequestSummaryForm.valid || !isSendData"
+          style="cursor: pointer;" [ngStyle]="{'display':'PaymentRequestSummary.Add' | operationclaim}"
+          [ngStyle]="{'display':'PaymentRequestSummary.Update' | operationclaim}">Onayla</button>
+
+        <button type="button" class="btn btn-danger" (click)="tandemUpdate(statusEnum.SummaryRejected)"
+          [disabled]="selectedSummaryExternals.length<=0 ||  !paymentRequestSummaryForm.valid || !isSendData"
+          style="cursor: pointer;" [ngStyle]="{'display':'PaymentRequestSummary.Add' | operationclaim}"
+          [ngStyle]="{'display':'PaymentRequestSummary.Update' | operationclaim}">Reddet</button>
+      </div>
+
+    </div>
+  </div>
+</div>
